@@ -149,7 +149,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     name: "Free",
     price: 0,
     period: "",
-    description: "Get started and explore what HomeChef has to offer.",
+    description: "Get started and explore what FreeChef has to offer.",
     features: [
       "Browse all cook profiles",
       "Post up to 2 events per month",

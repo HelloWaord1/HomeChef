@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, ChefHat } from "lucide-react";
+import { Menu, ChefHat, LogOut, LayoutDashboard, CalendarDays, User } from "lucide-react";
 
 const navLinks = [
   { href: "/cooks", label: "Browse Cooks" },
@@ -18,12 +19,16 @@ const navLinks = [
 export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const isLoggedIn = status === "authenticated" && session?.user;
+  const userRole = (session?.user as { role?: string } | undefined)?.role;
 
   return (
     <header
@@ -41,7 +46,7 @@ export function Navigation() {
               <ChefHat className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold tracking-tight text-stone-900">
-              Home<span className="text-warm-700">Chef</span>
+              Free<span className="text-warm-700">Chef</span>
             </span>
           </Link>
 
@@ -64,16 +69,61 @@ export function Navigation() {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button variant="ghost" size="sm" className="text-stone-600" asChild>
-              <Link href="/login">Log in</Link>
-            </Button>
-            <Button
-              size="sm"
-              className="bg-warm-700 hover:bg-warm-800 text-white rounded-full px-5"
-              asChild
-            >
-              <Link href="/signup">Sign up</Link>
-            </Button>
+            {isLoggedIn ? (
+              <>
+                {userRole === "COOK" && (
+                  <Button variant="ghost" size="sm" className="text-stone-600" asChild>
+                    <Link href="/dashboard">
+                      <LayoutDashboard className="w-4 h-4 mr-1.5" />
+                      Dashboard
+                    </Link>
+                  </Button>
+                )}
+                <Button variant="ghost" size="sm" className="text-stone-600" asChild>
+                  <Link href="/dashboard/bookings">
+                    <CalendarDays className="w-4 h-4 mr-1.5" />
+                    Bookings
+                  </Link>
+                </Button>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-100">
+                  {session.user?.image ? (
+                    <img
+                      src={session.user.image}
+                      alt=""
+                      className="w-6 h-6 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-warm-200 flex items-center justify-center">
+                      <User className="w-3.5 h-3.5 text-warm-700" />
+                    </div>
+                  )}
+                  <span className="text-sm font-medium text-stone-700">
+                    {session.user?.name?.split(" ")[0] || "User"}
+                  </span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-stone-500 hover:text-stone-700"
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                >
+                  <LogOut className="w-4 h-4" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" className="text-stone-600" asChild>
+                  <Link href="/login">Log in</Link>
+                </Button>
+                <Button
+                  size="sm"
+                  className="bg-warm-700 hover:bg-warm-800 text-white rounded-full px-5"
+                  asChild
+                >
+                  <Link href="/signup">Sign up</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu */}
@@ -95,7 +145,7 @@ export function Navigation() {
                       <ChefHat className="w-4 h-4 text-white" />
                     </div>
                     <span className="text-lg font-bold text-stone-900">
-                      Home<span className="text-warm-700">Chef</span>
+                      Free<span className="text-warm-700">Chef</span>
                     </span>
                   </Link>
                 </div>
@@ -110,14 +160,73 @@ export function Navigation() {
                       {link.label}
                     </Link>
                   ))}
+                  {isLoggedIn && (
+                    <>
+                      <Link
+                        href="/dashboard/bookings"
+                        onClick={() => setOpen(false)}
+                        className="px-4 py-3 text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors"
+                      >
+                        My Bookings
+                      </Link>
+                      {userRole === "COOK" && (
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setOpen(false)}
+                          className="px-4 py-3 text-base font-medium text-warm-700 hover:text-warm-800 hover:bg-warm-50 rounded-lg transition-colors"
+                        >
+                          Cook Dashboard
+                        </Link>
+                      )}
+                    </>
+                  )}
                 </div>
                 <div className="mt-auto p-4 border-t flex flex-col gap-2">
-                  <Button variant="outline" className="w-full" asChild>
-                    <Link href="/login" onClick={() => setOpen(false)}>Log in</Link>
-                  </Button>
-                  <Button className="w-full bg-warm-700 hover:bg-warm-800 text-white" asChild>
-                    <Link href="/signup" onClick={() => setOpen(false)}>Sign up</Link>
-                  </Button>
+                  {isLoggedIn ? (
+                    <>
+                      <div className="flex items-center gap-2 px-4 py-2 mb-1">
+                        {session.user?.image ? (
+                          <img
+                            src={session.user.image}
+                            alt=""
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-warm-200 flex items-center justify-center">
+                            <User className="w-4 h-4 text-warm-700" />
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-medium text-stone-900">
+                            {session.user?.name || "User"}
+                          </p>
+                          <p className="text-xs text-stone-500">
+                            {session.user?.email}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => {
+                          setOpen(false);
+                          signOut({ callbackUrl: "/" });
+                        }}
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Sign out
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="outline" className="w-full" asChild>
+                        <Link href="/login" onClick={() => setOpen(false)}>Log in</Link>
+                      </Button>
+                      <Button className="w-full bg-warm-700 hover:bg-warm-800 text-white" asChild>
+                        <Link href="/signup" onClick={() => setOpen(false)}>Sign up</Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </SheetContent>

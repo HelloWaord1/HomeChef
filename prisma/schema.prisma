@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String    // hashed
+  role          Role      @default(CUSTOMER)
+  avatar        String?
+  bio           String?
+  phone         String?
+  location      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Cook specific
+  cuisines      String[]
+  pricePerHour  Float?
+  rating        Float     @default(0)
+  reviewCount   Int       @default(0)
+  verified      Boolean   @default(false)
+
+  dishes           Dish[]
+  events           Event[]     @relation("EventHost")
+  bookings         Booking[]   @relation("BookingCustomer")
+  cookBookings     Booking[]   @relation("BookingCook")
+  reviews          Review[]    @relation("ReviewAuthor")
+  receivedReviews  Review[]    @relation("ReviewTarget")
+  sentMessages     Message[]   @relation("MessageSender")
+  receivedMessages Message[]   @relation("MessageReceiver")
+}
+
+enum Role {
+  CUSTOMER
+  COOK
+  ADMIN
+}
+
+model Dish {
+  id              String   @id @default(cuid())
+  name            String
+  description     String
+  price           Float
+  cuisine         String
+  category        String
+  image           String?
+  preparationTime Int      // minutes
+  servingSize     Int
+  ingredients     String[]
+  allergens       String[]
+  available       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  cook     User      @relation(fields: [cookId], references: [id])
+  cookId   String
+  bookings Booking[]
+}
+
+model Event {
+  id            String      @id @default(cuid())
+  title         String
+  description   String
+  date          DateTime
+  location      String
+  maxGuests     Int
+  pricePerGuest Float
+  cuisine       String
+  image         String?
+  status        EventStatus @default(UPCOMING)
+  createdAt     DateTime    @default(now())
+
+  host     User      @relation("EventHost", fields: [hostId], references: [id])
+  hostId   String
+  bookings Booking[]
+}
+
+enum EventStatus {
+  UPCOMING
+  FULL
+  COMPLETED
+  CANCELLED
+}
+
+model Booking {
+  id        String        @id @default(cuid())
+  status    BookingStatus @default(PENDING)
+  date      DateTime
+  guests    Int           @default(1)
+  notes     String?
+  total     Float
+  createdAt DateTime      @default(now())
+
+  customer   User   @relation("BookingCustomer", fields: [customerId], references: [id])
+  customerId String
+  cook       User   @relation("BookingCook", fields: [cookId], references: [id])
+  cookId     String
+  dish       Dish?  @relation(fields: [dishId], references: [id])
+  dishId     String?
+  event      Event? @relation(fields: [eventId], references: [id])
+  eventId    String?
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int      // 1-5
+  comment   String
+  createdAt DateTime @default(now())
+
+  author   User   @relation("ReviewAuthor", fields: [authorId], references: [id])
+  authorId String
+  target   User   @relation("ReviewTarget", fields: [targetId], references: [id])
+  targetId String
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  content   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  sender     User   @relation("MessageSender", fields: [senderId], references: [id])
+  senderId   String
+  receiver   User   @relation("MessageReceiver", fields: [receiverId], references: [id])
+  receiverId String
+}

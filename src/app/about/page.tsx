@@ -28,7 +28,7 @@ const values = [
     icon: Users,
     title: "Community First",
     description:
-      "We believe in building real connections between neighbors. When you order from a HomeChef cook, you're not just buying food — you're supporting a person and their dream.",
+      "We believe in building real connections between neighbors. When you order from a FreeChef cook, you're not just buying food — you're supporting a person and their dream.",
   },
   {
     icon: Sprout,
@@ -64,7 +64,7 @@ export default function AboutPage() {
             </span>
           </h1>
           <p className="text-lg sm:text-xl text-stone-500 leading-relaxed max-w-2xl mx-auto">
-            We started HomeChef with a simple belief: the best food in the
+            We started FreeChef with a simple belief: the best food in the
             world isn&apos;t in restaurants — it&apos;s in people&apos;s homes.
           </p>
         </div>
@@ -82,7 +82,7 @@ export default function AboutPage() {
               stories, the kitchen where someone cooked just for you.
             </blockquote>
             <p className="text-sm text-stone-500">
-              — The HomeChef Team
+              — The FreeChef Team
             </p>
           </div>
         </div>
@@ -107,7 +107,7 @@ export default function AboutPage() {
                   and fast food.
                 </p>
                 <p>
-                  HomeChef flips the script. We connect home cooks directly with
+                  FreeChef flips the script. We connect home cooks directly with
                   food lovers in their neighborhood. No commercial kitchen
                   required. No 30% platform fees. Just real people making real
                   food.
@@ -224,7 +224,7 @@ export default function AboutPage() {
           <p className="text-stone-500 text-lg mb-8 max-w-xl mx-auto">
             Whether you&apos;re a food lover looking for authentic meals or a
             cook ready to share your talent — there&apos;s a place for you at
-            HomeChef.
+            FreeChef.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/cooks">

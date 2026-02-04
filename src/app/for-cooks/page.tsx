@@ -75,14 +75,14 @@ const steps = [
     num: "04",
     title: "Start Cooking",
     description:
-      "Go live and start receiving orders from food lovers in your neighborhood. Welcome to HomeChef!",
+      "Go live and start receiving orders from food lovers in your neighborhood. Welcome to FreeChef!",
   },
 ];
 
 const testimonials = [
   {
     quote:
-      "HomeChef changed my life. I went from cooking for family to having a thriving business from my kitchen. I earn more than my old office job, and I love every minute.",
+      "FreeChef changed my life. I went from cooking for family to having a thriving business from my kitchen. I earn more than my old office job, and I love every minute.",
     author: "Nino K.",
     role: "Georgian cook, Brooklyn",
     avatar:

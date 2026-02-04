@@ -2,11 +2,26 @@ import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/star-rating";
-import { MapPin, ShieldCheck, Briefcase, CircleDot } from "lucide-react";
-import type { Cook } from "@/lib/data";
+import { MapPin, ShieldCheck } from "lucide-react";
 
 interface CookCardProps {
-  cook: Cook;
+  cook: {
+    id: string;
+    name: string;
+    slug: string;
+    avatar: string;
+    coverImage: string;
+    bio: string;
+    city: string;
+    country: string;
+    cuisine: string[];
+    rating: number;
+    reviewCount: number;
+    completedEvents: number;
+    priceRange: string;
+    verified: boolean;
+    available: boolean;
+  };
   index?: number;
 }
 
@@ -32,13 +47,19 @@ export function CookCard({ cook, index = 0 }: CookCardProps) {
           <div className="absolute -bottom-6 left-4">
             <div className="relative">
               <div className="w-14 h-14 rounded-xl border-[3px] border-white shadow-md overflow-hidden">
-                <Image
-                  src={cook.avatar}
-                  alt={cook.name}
-                  width={56}
-                  height={56}
-                  className="object-cover w-full h-full"
-                />
+                {cook.avatar ? (
+                  <Image
+                    src={cook.avatar}
+                    alt={cook.name}
+                    width={56}
+                    height={56}
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-warm-200 flex items-center justify-center text-warm-700 font-bold">
+                    {cook.name[0]}
+                  </div>
+                )}
               </div>
               {cook.available && (
                 <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-400 border-2 border-white rounded-full" />
@@ -72,22 +93,11 @@ export function CookCard({ cook, index = 0 }: CookCardProps) {
 
           <div className="flex items-center gap-2 mb-2">
             <StarRating rating={cook.rating} />
-            <span className="text-xs text-stone-500">
-              ({cook.reviewCount})
-            </span>
+            <span className="text-xs text-stone-500">({cook.reviewCount})</span>
           </div>
 
           <div className="flex items-center gap-2 mb-3">
-            <Badge
-              variant="secondary"
-              className="text-[10px] bg-sage-50 text-sage-700 border-0 font-medium"
-            >
-              <Briefcase className="w-2.5 h-2.5 mr-1" />
-              {cook.experienceLevel}
-            </Badge>
-            <span className="text-xs text-stone-500 font-medium">
-              {cook.priceRange}
-            </span>
+            <span className="text-xs text-stone-500 font-medium">{cook.priceRange}</span>
           </div>
 
           <p className="text-sm text-stone-500 line-clamp-2 mb-3 leading-relaxed">
@@ -97,9 +107,9 @@ export function CookCard({ cook, index = 0 }: CookCardProps) {
           <div className="flex items-center justify-between text-xs text-stone-400">
             <span className="flex items-center gap-1">
               <MapPin className="w-3 h-3" />
-              {cook.city}, {cook.country}
+              {cook.city}{cook.country ? `, ${cook.country}` : ""}
             </span>
-            <span>{cook.completedEvents} events done</span>
+            <span>{cook.completedEvents} dishes</span>
           </div>
         </div>
       </article>

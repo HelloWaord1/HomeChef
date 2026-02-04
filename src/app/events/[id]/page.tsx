@@ -3,30 +3,18 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { StarRating } from "@/components/star-rating";
-import { events, getEventById } from "@/lib/data";
+import { prisma } from "@/lib/prisma";
 import {
   ArrowLeft,
   MapPin,
   Calendar,
   Users,
   DollarSign,
-  UtensilsCrossed,
   ChefHat,
   Clock,
   MessageSquare,
 } from "lucide-react";
-import {
-  SubmitBidButton,
-  FirstBidButton,
-  BidActionButtons,
-} from "@/components/event-detail-actions";
-
-export function generateStaticParams() {
-  return events.map((event) => ({
-    id: event.id,
-  }));
-}
+import { JoinEventButton } from "@/components/join-event-button";
 
 export default async function EventDetailPage({
   params,
@@ -34,27 +22,33 @@ export default async function EventDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const event = getEventById(id);
+
+  const event = await prisma.event.findUnique({
+    where: { id },
+    include: {
+      host: {
+        select: { id: true, name: true, avatar: true },
+      },
+      bookings: {
+        include: {
+          customer: {
+            select: { id: true, name: true, avatar: true },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
 
   if (!event) {
     notFound();
   }
 
-  const mealEmoji =
-    event.mealType === "Breakfast"
-      ? "🌅"
-      : event.mealType === "Lunch"
-      ? "☀️"
-      : event.mealType === "Dinner"
-      ? "🌙"
-      : event.mealType === "Party"
-      ? "🎉"
-      : "✨";
+  const spotsLeft = event.maxGuests - event.bookings.length;
 
   return (
     <div className="pt-24 pb-16 min-h-screen bg-gradient-to-b from-cream-50 to-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back Link */}
         <Link
           href="/events"
           className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 transition-colors mb-6"
@@ -63,9 +57,7 @@ export default async function EventDetailPage({
           Back to Events
         </Link>
 
-        {/* Main Card */}
         <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
-          {/* Top gradient bar */}
           <div className="h-2 bg-gradient-to-r from-warm-400 to-warm-600" />
 
           <div className="p-6 sm:p-8">
@@ -79,16 +71,20 @@ export default async function EventDetailPage({
                   <Badge
                     variant="outline"
                     className={`text-xs ${
-                      event.status === "open"
+                      event.status === "UPCOMING"
                         ? "border-sage-300 text-sage-700"
-                        : "border-warm-300 text-warm-700"
+                        : event.status === "FULL"
+                        ? "border-amber-300 text-amber-700"
+                        : "border-stone-300 text-stone-700"
                     }`}
                   >
-                    {event.status === "open"
-                      ? "🟢 Open"
-                      : event.status === "in-progress"
-                      ? "🟡 In Progress"
-                      : "✅ Completed"}
+                    {event.status === "UPCOMING" && spotsLeft > 0
+                      ? `🟢 ${spotsLeft} spots left`
+                      : event.status === "FULL"
+                      ? "🟡 Full"
+                      : event.status === "COMPLETED"
+                      ? "✅ Completed"
+                      : "🔴 Cancelled"}
                   </Badge>
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-2">
@@ -96,26 +92,25 @@ export default async function EventDetailPage({
                 </h1>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full overflow-hidden">
-                      <Image
-                        src={event.postedByAvatar}
-                        alt={event.postedBy}
-                        width={28}
-                        height={28}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                    {event.host.avatar ? (
+                      <div className="w-7 h-7 rounded-full overflow-hidden">
+                        <Image
+                          src={event.host.avatar}
+                          alt={event.host.name || "Host"}
+                          width={28}
+                          height={28}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-7 h-7 rounded-full bg-stone-200 flex items-center justify-center text-xs font-medium">
+                        {event.host.name?.[0] || "?"}
+                      </div>
+                    )}
                     <span className="text-sm text-stone-600">
-                      Posted by{" "}
-                      <strong className="text-stone-700">
-                        {event.postedBy}
-                      </strong>
+                      Hosted by <strong className="text-stone-700">{event.host.name}</strong>
                     </span>
                   </div>
-                  <span className="flex items-center gap-1 text-xs text-stone-400">
-                    <Clock className="w-3 h-3" />
-                    {event.postedAt}
-                  </span>
                 </div>
               </div>
             </div>
@@ -128,10 +123,7 @@ export default async function EventDetailPage({
                   Location
                 </div>
                 <p className="text-sm font-semibold text-stone-800">
-                  {event.city}, {event.country}
-                </p>
-                <p className="text-xs text-stone-500 mt-0.5">
-                  {event.address}
+                  {event.location}
                 </p>
               </div>
               <div className="bg-stone-50 rounded-xl p-4">
@@ -140,10 +132,10 @@ export default async function EventDetailPage({
                   Date & Time
                 </div>
                 <p className="text-sm font-semibold text-stone-800">
-                  {event.date}
+                  {event.date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                 </p>
                 <p className="text-xs text-stone-500 mt-0.5">
-                  {mealEmoji} {event.mealType} at {event.time}
+                  {event.date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
                 </p>
               </div>
               <div className="bg-stone-50 rounded-xl p-4">
@@ -152,133 +144,102 @@ export default async function EventDetailPage({
                   Group Size
                 </div>
                 <p className="text-sm font-semibold text-stone-800">
-                  {event.guestCount} people
+                  {event.maxGuests} people
+                </p>
+                <p className="text-xs text-stone-500 mt-0.5">
+                  {event.bookings.length} joined
                 </p>
               </div>
               <div className="bg-stone-50 rounded-xl p-4">
                 <div className="flex items-center gap-2 text-xs text-stone-400 mb-1">
                   <DollarSign className="w-3.5 h-3.5" />
-                  Budget
+                  Price
                 </div>
                 <p className="text-sm font-semibold text-stone-800">
-                  ${event.budgetPerPerson}/person
+                  ${event.pricePerGuest}/person
                 </p>
                 <p className="text-xs text-warm-600 font-medium mt-0.5">
-                  ${event.budgetPerPerson * event.guestCount} total
+                  ${event.pricePerGuest * event.maxGuests} total
                 </p>
               </div>
             </div>
 
-            {/* Ingredients & Description */}
-            <div className="mb-6">
-              <Badge
-                variant="outline"
-                className={`text-xs mb-4 ${
-                  event.ingredientProvider === "host"
-                    ? "border-sage-300 text-sage-700 bg-sage-50"
-                    : "border-warm-200 text-warm-700 bg-warm-50"
-                }`}
-              >
-                <UtensilsCrossed className="w-3 h-3 mr-1" />
-                {event.ingredientProvider === "host"
-                  ? "Host provides ingredients"
-                  : "Cook brings everything"}
-              </Badge>
-
-              {event.description && (
+            {/* Description */}
+            {event.description && (
+              <div className="mb-6">
                 <div className="bg-cream-50 rounded-xl p-5 border border-cream-200">
-                  <h3 className="text-sm font-semibold text-stone-700 mb-2">
-                    About this event
-                  </h3>
-                  <p className="text-sm text-stone-600 leading-relaxed">
-                    {event.description}
+                  <h3 className="text-sm font-semibold text-stone-700 mb-2">About this event</h3>
+                  <p className="text-sm text-stone-600 leading-relaxed">{event.description}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Join CTA */}
+            {event.status === "UPCOMING" && spotsLeft > 0 && (
+              <div className="bg-gradient-to-r from-warm-50 to-cream-50 rounded-xl p-5 border border-warm-100 flex flex-col sm:flex-row items-center gap-4">
+                <div className="flex-1 text-center sm:text-left">
+                  <p className="text-sm font-semibold text-stone-800">
+                    Join this event! {spotsLeft} spots remaining.
+                  </p>
+                  <p className="text-xs text-stone-500 mt-0.5">
+                    ${event.pricePerGuest} per person
                   </p>
                 </div>
-              )}
-            </div>
-
-            {/* CTA for cooks */}
-            <div className="bg-gradient-to-r from-warm-50 to-cream-50 rounded-xl p-5 border border-warm-100 flex flex-col sm:flex-row items-center gap-4">
-              <div className="flex-1 text-center sm:text-left">
-                <p className="text-sm font-semibold text-stone-800">
-                  Are you a cook? Send your proposal!
-                </p>
-                <p className="text-xs text-stone-500 mt-0.5">
-                  Include your proposed menu and pricing
-                </p>
+                <JoinEventButton
+                  eventId={event.id}
+                  hostId={event.hostId}
+                  pricePerGuest={event.pricePerGuest}
+                  eventDate={event.date.toISOString()}
+                />
               </div>
-              <SubmitBidButton />
-            </div>
+            )}
           </div>
         </div>
 
-        {/* Bids Section */}
+        {/* Guests */}
         <div className="mt-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-stone-900 flex items-center gap-2">
               <MessageSquare className="w-5 h-5 text-warm-600" />
-              Cook Proposals
+              Guests
               <span className="text-sm font-normal text-stone-400">
-                ({event.responses.length})
+                ({event.bookings.length})
               </span>
             </h2>
           </div>
 
-          {event.responses.length > 0 ? (
-            <div className="space-y-4">
-              {event.responses.map((bid, i) => (
+          {event.bookings.length > 0 ? (
+            <div className="space-y-3">
+              {event.bookings.map((booking) => (
                 <div
-                  key={bid.id}
-                  className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 hover:border-stone-200 transition-all animate-fade-in-up"
-                  style={{ animationDelay: `${i * 100}ms` }}
+                  key={booking.id}
+                  className="bg-white rounded-xl border border-stone-100 shadow-sm p-4 flex items-center gap-3"
                 >
-                  {/* Cook Info */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-stone-100">
-                        <Image
-                          src={bid.cookAvatar}
-                          alt={bid.cookName}
-                          width={48}
-                          height={48}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-stone-900">
-                          {bid.cookName}
-                        </h3>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <StarRating rating={bid.cookRating} />
-                          <span className="text-xs text-stone-500">
-                            ({bid.cookReviewCount} reviews)
-                          </span>
-                        </div>
-                      </div>
+                  {booking.customer.avatar ? (
+                    <div className="w-10 h-10 rounded-full overflow-hidden">
+                      <Image
+                        src={booking.customer.avatar}
+                        alt={booking.customer.name || "Guest"}
+                        width={40}
+                        height={40}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-warm-700">
-                        ${bid.proposedFee}
-                      </p>
-                      <p className="text-xs text-stone-400">total</p>
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center text-sm font-medium text-stone-500">
+                      {booking.customer.name?.[0] || "?"}
                     </div>
-                  </div>
-
-                  {/* Message */}
-                  <div className="bg-stone-50 rounded-xl p-4 mb-4">
-                    <p className="text-sm text-stone-600 leading-relaxed">
-                      &ldquo;{bid.message}&rdquo;
+                  )}
+                  <div className="flex-1">
+                    <p className="font-medium text-stone-900 text-sm">{booking.customer.name}</p>
+                    <p className="text-xs text-stone-500">
+                      {booking.guests} {booking.guests === 1 ? "guest" : "guests"} · {booking.status.toLowerCase()}
                     </p>
                   </div>
-
-                  {/* Footer */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-stone-400 flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      Submitted {bid.submittedAt}
-                    </span>
-                    <BidActionButtons />
-                  </div>
+                  <span className="text-xs text-stone-400">
+                    <Clock className="w-3 h-3 inline mr-1" />
+                    {new Date(booking.createdAt).toLocaleDateString()}
+                  </span>
                 </div>
               ))}
             </div>
@@ -287,14 +248,8 @@ export default async function EventDetailPage({
               <div className="w-14 h-14 rounded-2xl bg-stone-100 flex items-center justify-center mx-auto mb-4">
                 <ChefHat className="w-7 h-7 text-stone-400" />
               </div>
-              <h3 className="text-lg font-semibold text-stone-700 mb-1">
-                No bids yet
-              </h3>
-              <p className="text-sm text-stone-500 mb-4">
-                This event was just posted. Cooks will start sending proposals
-                soon!
-              </p>
-              <FirstBidButton />
+              <h3 className="text-lg font-semibold text-stone-700 mb-1">No guests yet</h3>
+              <p className="text-sm text-stone-500 mb-4">Be the first to join this event!</p>
             </div>
           )}
         </div>

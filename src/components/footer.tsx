@@ -123,7 +123,7 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-stone-600">
-            © 2025 HomeChef. All rights reserved.
+            © 2025 FreeChef. All rights reserved.
           </p>
           <p className="text-xs text-stone-600">
             Made with 🧡 for home cooks everywhere
