@@ -64,14 +64,15 @@ export function Navigation() {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button variant="ghost" size="sm" className="text-stone-600">
-              Log in
+            <Button variant="ghost" size="sm" className="text-stone-600" asChild>
+              <Link href="/login">Log in</Link>
             </Button>
             <Button
               size="sm"
               className="bg-warm-700 hover:bg-warm-800 text-white rounded-full px-5"
+              asChild
             >
-              Sign up
+              <Link href="/signup">Sign up</Link>
             </Button>
           </div>
 
@@ -111,11 +112,11 @@ export function Navigation() {
                   ))}
                 </div>
                 <div className="mt-auto p-4 border-t flex flex-col gap-2">
-                  <Button variant="outline" className="w-full">
-                    Log in
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link href="/login" onClick={() => setOpen(false)}>Log in</Link>
                   </Button>
-                  <Button className="w-full bg-warm-700 hover:bg-warm-800 text-white">
-                    Sign up
+                  <Button className="w-full bg-warm-700 hover:bg-warm-800 text-white" asChild>
+                    <Link href="/signup" onClick={() => setOpen(false)}>Sign up</Link>
                   </Button>
                 </div>
               </div>
