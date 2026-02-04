@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { createNotification } from "./notifications";
 
 export async function sendMessage(data: {
   receiverId: string;
@@ -20,6 +21,21 @@ export async function sendMessage(data: {
       content: data.content,
     },
   });
+
+  // Create notification for the receiver
+  try {
+    const senderName = session.user?.name || "Someone";
+    const preview = data.content.length > 60 ? data.content.substring(0, 60) + "..." : data.content;
+    await createNotification({
+      userId: data.receiverId,
+      type: "MESSAGE_NEW",
+      title: "New Message",
+      message: `${senderName}: ${preview}`,
+      linkUrl: `/dashboard/messages/${session.user.id}`,
+    });
+  } catch {
+    // Don't fail message send if notification fails
+  }
 
   return { success: true, messageId: message.id };
 }

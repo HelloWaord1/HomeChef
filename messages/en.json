@@ -13,7 +13,8 @@
     "messages": "Messages",
     "signout": "Sign out",
     "myBookings": "My Bookings",
-    "cookDashboard": "Cook Dashboard"
+    "cookDashboard": "Cook Dashboard",
+    "notifications": "Notifications"
   },
   "home": {
     "badge": "Now live in 8 cities worldwide",
@@ -141,7 +142,18 @@
     "hireCook": "Hire Cook",
     "bookNow": "Book Now",
     "noImage": "No Image",
-    "min": "min"
+    "min": "min",
+    "filters": "Filters",
+    "priceRange": "Price Range",
+    "max": "Max",
+    "minRating": "Min Rating",
+    "anyRating": "Any rating",
+    "nearMe": "Near me",
+    "sortRating": "Rating",
+    "sortReviews": "Reviews",
+    "sortPriceLow": "Price: Low to High",
+    "sortPriceHigh": "Price: High to Low",
+    "sortDistance": "Distance"
   },
   "dishes": {
     "title": "Browse Dishes",
@@ -586,5 +598,58 @@
     "en": "English",
     "ru": "Русский",
     "es": "Español"
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "subtitle": "Enter your email and we'll send you a reset link",
+    "emailLabel": "Email",
+    "sendReset": "Send Reset Link",
+    "sending": "Sending...",
+    "sentTitle": "Check Your Email",
+    "sentDesc": "We've sent a password reset link to your email address.",
+    "somethingWrong": "Something went wrong. Please try again.",
+    "backToLogin": "Back to Login",
+    "mvpNote": "MVP Mode: The reset link is shown below for testing purposes."
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "subtitle": "Enter your new password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "resetButton": "Reset Password",
+    "resetting": "Resetting...",
+    "token": "Reset Token",
+    "successTitle": "Password Reset!",
+    "successDesc": "Your password has been successfully reset.",
+    "goToLogin": "Go to Login",
+    "invalidToken": "Invalid or expired reset token.",
+    "requestNew": "Request a new reset link",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordsMismatch": "Passwords don't match",
+    "somethingWrong": "Something went wrong. Please try again."
+  },
+  "verifyEmail": {
+    "title": "Verify Email",
+    "token": "Verification Token",
+    "verifying": "Verifying...",
+    "successTitle": "Email Verified!",
+    "successDesc": "Your email has been successfully verified.",
+    "errorTitle": "Verification Failed",
+    "errorDesc": "The verification token is invalid or has expired.",
+    "goToLogin": "Go to Login",
+    "backToSignup": "Back to Sign Up"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "noNotifications": "No notifications",
+    "noNotificationsHint": "You're all caught up!",
+    "markAllRead": "Mark all as read",
+    "allRead": "All notifications marked as read",
+    "viewAll": "View all notifications",
+    "unreadCount": "{count} unread",
+    "justNow": "Just now",
+    "minutesAgo": "{count}m ago",
+    "hoursAgo": "{count}h ago",
+    "daysAgo": "{count}d ago"
   }
 }

@@ -24,10 +24,13 @@ export default async function BrowseCooksPage() {
     cuisine: cook.cuisines,
     rating: cook.rating,
     reviewCount: cook.reviewCount,
-    completedEvents: cook.dishes.length, // use dish count as proxy
+    completedEvents: cook.dishes.length,
     priceRange: cook.pricePerHour ? `$${cook.pricePerHour}/hr` : "Contact for pricing",
+    pricePerHour: cook.pricePerHour,
     verified: cook.verified,
     available: true,
+    latitude: cook.latitude,
+    longitude: cook.longitude,
   }));
 
   return <CooksPageClient cooks={cookData} />;

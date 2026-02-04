@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { NotificationBell } from "@/components/notification-bell";
 import { Menu, ChefHat, LogOut, LayoutDashboard, CalendarDays, User } from "lucide-react";
 
 export function Navigation() {
@@ -71,6 +72,7 @@ export function Navigation() {
             <LanguageSwitcher />
             {isLoggedIn ? (
               <>
+                <NotificationBell />
                 {userRole === "COOK" && (
                   <Button variant="ghost" size="sm" className="text-stone-600" asChild>
                     <Link href="/dashboard">
@@ -129,6 +131,7 @@ export function Navigation() {
           {/* Mobile Menu */}
           <div className="flex items-center gap-2 lg:hidden">
             <LanguageSwitcher />
+            {isLoggedIn && <NotificationBell />}
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -170,6 +173,13 @@ export function Navigation() {
                           className="px-4 py-3 text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors"
                         >
                           {t("myBookings")}
+                        </Link>
+                        <Link
+                          href="/dashboard/notifications"
+                          onClick={() => setOpen(false)}
+                          className="px-4 py-3 text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors"
+                        >
+                          {t("notifications")}
                         </Link>
                         {userRole === "COOK" && (
                           <Link

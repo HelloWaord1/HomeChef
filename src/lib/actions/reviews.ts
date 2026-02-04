@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { createNotification } from "./notifications";
 
 export async function createReview(data: {
   targetId: string;
@@ -42,6 +43,21 @@ export async function createReview(data: {
       reviewCount: reviews.length,
     },
   });
+
+  // Notify the cook about the new review
+  try {
+    const reviewerName = session.user?.name || "Someone";
+    const stars = "★".repeat(data.rating) + "☆".repeat(5 - data.rating);
+    await createNotification({
+      userId: data.targetId,
+      type: "REVIEW_NEW",
+      title: "New Review",
+      message: `${reviewerName} left you a ${stars} review`,
+      linkUrl: "/dashboard/reviews",
+    });
+  } catch {
+    // Don't fail review creation if notification fails
+  }
 
   return { success: true, reviewId: review.id };
 }

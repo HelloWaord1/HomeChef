@@ -13,7 +13,8 @@
     "messages": "Сообщения",
     "signout": "Выйти",
     "myBookings": "Мои бронирования",
-    "cookDashboard": "Панель повара"
+    "cookDashboard": "Панель повара",
+    "notifications": "Уведомления"
   },
   "home": {
     "badge": "Уже работаем в 8 городах мира",
@@ -141,7 +142,18 @@
     "hireCook": "Нанять повара",
     "bookNow": "Забронировать",
     "noImage": "Нет фото",
-    "min": "мин"
+    "min": "мин",
+    "filters": "Фильтры",
+    "priceRange": "Ценовой диапазон",
+    "max": "Макс",
+    "minRating": "Мин. рейтинг",
+    "anyRating": "Любой рейтинг",
+    "nearMe": "Рядом со мной",
+    "sortRating": "Рейтинг",
+    "sortReviews": "Отзывы",
+    "sortPriceLow": "Цена: по возрастанию",
+    "sortPriceHigh": "Цена: по убыванию",
+    "sortDistance": "Расстояние"
   },
   "dishes": {
     "title": "Каталог блюд",
@@ -586,5 +598,58 @@
     "en": "English",
     "ru": "Русский",
     "es": "Español"
+  },
+  "forgotPassword": {
+    "title": "Забыли пароль",
+    "subtitle": "Введите email и мы отправим ссылку для сброса",
+    "emailLabel": "Email",
+    "sendReset": "Отправить ссылку",
+    "sending": "Отправка...",
+    "sentTitle": "Проверьте почту",
+    "sentDesc": "Мы отправили ссылку для сброса пароля на вашу почту.",
+    "somethingWrong": "Что-то пошло не так. Попробуйте снова.",
+    "backToLogin": "Назад к входу",
+    "mvpNote": "MVP: Ссылка для сброса показана ниже для тестирования."
+  },
+  "resetPassword": {
+    "title": "Сброс пароля",
+    "subtitle": "Введите новый пароль",
+    "newPassword": "Новый пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "resetButton": "Сбросить пароль",
+    "resetting": "Сброс...",
+    "token": "Токен сброса",
+    "successTitle": "Пароль сброшен!",
+    "successDesc": "Ваш пароль успешно изменён.",
+    "goToLogin": "Войти",
+    "invalidToken": "Недействительный или истёкший токен.",
+    "requestNew": "Запросить новую ссылку",
+    "passwordTooShort": "Пароль должен быть не менее 8 символов",
+    "passwordsMismatch": "Пароли не совпадают",
+    "somethingWrong": "Что-то пошло не так. Попробуйте снова."
+  },
+  "verifyEmail": {
+    "title": "Подтверждение email",
+    "token": "Токен подтверждения",
+    "verifying": "Проверка...",
+    "successTitle": "Email подтверждён!",
+    "successDesc": "Ваш email успешно подтверждён.",
+    "errorTitle": "Ошибка подтверждения",
+    "errorDesc": "Токен подтверждения недействителен или истёк.",
+    "goToLogin": "Войти",
+    "backToSignup": "Назад к регистрации"
+  },
+  "notifications": {
+    "title": "Уведомления",
+    "noNotifications": "Нет уведомлений",
+    "noNotificationsHint": "Вы в курсе всего!",
+    "markAllRead": "Отметить все как прочитанные",
+    "allRead": "Все уведомления прочитаны",
+    "viewAll": "Все уведомления",
+    "unreadCount": "{count} непрочитанных",
+    "justNow": "Только что",
+    "minutesAgo": "{count} мин назад",
+    "hoursAgo": "{count} ч назад",
+    "daysAgo": "{count} д назад"
   }
 }

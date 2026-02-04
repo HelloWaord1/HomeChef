@@ -2,7 +2,7 @@ import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/star-rating";
-import { MapPin, ShieldCheck } from "lucide-react";
+import { MapPin, ShieldCheck, Navigation } from "lucide-react";
 
 interface CookCardProps {
   cook: {
@@ -23,9 +23,10 @@ interface CookCardProps {
     available: boolean;
   };
   index?: number;
+  distance?: number;
 }
 
-export function CookCard({ cook, index = 0 }: CookCardProps) {
+export function CookCard({ cook, index = 0, distance }: CookCardProps) {
   return (
     <Link href={`/cooks/${cook.slug}`} className="group block">
       <article
@@ -78,6 +79,16 @@ export function CookCard({ cook, index = 0 }: CookCardProps) {
               </Badge>
             ))}
           </div>
+
+          {/* Distance Badge */}
+          {distance !== undefined && distance !== null && (
+            <div className="absolute top-3 left-3">
+              <Badge className="bg-warm-600/90 backdrop-blur-sm text-white hover:bg-warm-600 border-0 text-[10px] font-medium">
+                <Navigation className="w-2.5 h-2.5 mr-1" />
+                {distance < 1 ? `${Math.round(distance * 1000)}m` : `${distance.toFixed(1)}km`}
+              </Badge>
+            </div>
+          )}
         </div>
 
         {/* Content */}

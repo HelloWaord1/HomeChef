@@ -13,7 +13,8 @@
     "messages": "Mensajes",
     "signout": "Cerrar sesión",
     "myBookings": "Mis reservas",
-    "cookDashboard": "Panel del cocinero"
+    "cookDashboard": "Panel del cocinero",
+    "notifications": "Notificaciones"
   },
   "home": {
     "badge": "Ya disponible en 8 ciudades del mundo",
@@ -141,7 +142,18 @@
     "hireCook": "Contratar",
     "bookNow": "Reservar ahora",
     "noImage": "Sin imagen",
-    "min": "min"
+    "min": "min",
+    "filters": "Filtros",
+    "priceRange": "Rango de precio",
+    "max": "Máx",
+    "minRating": "Calificación mín.",
+    "anyRating": "Cualquier calificación",
+    "nearMe": "Cerca de mí",
+    "sortRating": "Calificación",
+    "sortReviews": "Reseñas",
+    "sortPriceLow": "Precio: menor a mayor",
+    "sortPriceHigh": "Precio: mayor a menor",
+    "sortDistance": "Distancia"
   },
   "dishes": {
     "title": "Explorar platos",
@@ -586,5 +598,58 @@
     "en": "English",
     "ru": "Русский",
     "es": "Español"
+  },
+  "forgotPassword": {
+    "title": "Olvidé mi contraseña",
+    "subtitle": "Ingresa tu email y te enviaremos un enlace de restablecimiento",
+    "emailLabel": "Email",
+    "sendReset": "Enviar enlace",
+    "sending": "Enviando...",
+    "sentTitle": "Revisa tu correo",
+    "sentDesc": "Hemos enviado un enlace de restablecimiento a tu correo.",
+    "somethingWrong": "Algo salió mal. Inténtalo de nuevo.",
+    "backToLogin": "Volver al inicio de sesión",
+    "mvpNote": "MVP: El enlace de restablecimiento se muestra abajo para pruebas."
+  },
+  "resetPassword": {
+    "title": "Restablecer contraseña",
+    "subtitle": "Ingresa tu nueva contraseña",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "resetButton": "Restablecer contraseña",
+    "resetting": "Restableciendo...",
+    "token": "Token de restablecimiento",
+    "successTitle": "¡Contraseña restablecida!",
+    "successDesc": "Tu contraseña ha sido cambiada exitosamente.",
+    "goToLogin": "Iniciar sesión",
+    "invalidToken": "Token inválido o expirado.",
+    "requestNew": "Solicitar un nuevo enlace",
+    "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+    "passwordsMismatch": "Las contraseñas no coinciden",
+    "somethingWrong": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "verifyEmail": {
+    "title": "Verificar email",
+    "token": "Token de verificación",
+    "verifying": "Verificando...",
+    "successTitle": "¡Email verificado!",
+    "successDesc": "Tu email ha sido verificado exitosamente.",
+    "errorTitle": "Error de verificación",
+    "errorDesc": "El token de verificación es inválido o ha expirado.",
+    "goToLogin": "Iniciar sesión",
+    "backToSignup": "Volver al registro"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "noNotifications": "Sin notificaciones",
+    "noNotificationsHint": "¡Estás al día!",
+    "markAllRead": "Marcar todo como leído",
+    "allRead": "Todas las notificaciones marcadas como leídas",
+    "viewAll": "Ver todas las notificaciones",
+    "unreadCount": "{count} sin leer",
+    "justNow": "Ahora mismo",
+    "minutesAgo": "hace {count}m",
+    "hoursAgo": "hace {count}h",
+    "daysAgo": "hace {count}d"
   }
 }

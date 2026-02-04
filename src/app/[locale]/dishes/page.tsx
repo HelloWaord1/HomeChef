@@ -24,6 +24,7 @@ export default async function BrowseDishesPage() {
     price: dish.price,
     image: dish.image || "",
     cuisine: dish.cuisine,
+    category: dish.category,
     dietary: dish.allergens, // map allergens as dietary labels
     preparationTime: `${dish.preparationTime} min`,
     servingSize: `${dish.servingSize} people`,

@@ -15,6 +15,7 @@ import {
   ChefHat,
   Loader2,
   Settings,
+  Bell,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -26,23 +27,31 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const t = useTranslations("dashboard");
   const [unreadCount, setUnreadCount] = useState(0);
+  const [notifCount, setNotifCount] = useState(0);
 
-  // Poll for unread messages
+  // Poll for unread messages and notifications
   useEffect(() => {
-    async function fetchUnread() {
+    async function fetchCounts() {
       try {
-        const res = await fetch("/api/messages/unread");
-        if (res.ok) {
-          const data = await res.json();
+        const [msgRes, notifRes] = await Promise.all([
+          fetch("/api/messages/unread"),
+          fetch("/api/notifications/unread"),
+        ]);
+        if (msgRes.ok) {
+          const data = await msgRes.json();
           setUnreadCount(data.count);
+        }
+        if (notifRes.ok) {
+          const data = await notifRes.json();
+          setNotifCount(data.count);
         }
       } catch {
         // ignore
       }
     }
 
-    fetchUnread();
-    const interval = setInterval(fetchUnread, 10000);
+    fetchCounts();
+    const interval = setInterval(fetchCounts, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -68,6 +77,12 @@ export default function DashboardLayout({
       label: t("messagesNav"),
       icon: MessageCircle,
       badge: unreadCount,
+    },
+    {
+      href: "/dashboard/notifications" as const,
+      label: t("notificationsNav"),
+      icon: Bell,
+      badge: notifCount,
     },
     {
       href: "/dashboard/reviews" as const,

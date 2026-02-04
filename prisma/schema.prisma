@@ -27,6 +27,18 @@ model User {
   reviewCount   Int       @default(0)
   verified      Boolean   @default(false)
 
+  // Geolocation
+  latitude      Float?
+  longitude     Float?
+
+  // Email verification
+  emailVerified     Boolean   @default(false)
+  verificationToken String?
+
+  // Password reset
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+
   dishes           Dish[]
   events           Event[]     @relation("EventHost")
   bookings         Booking[]   @relation("BookingCustomer")
@@ -35,6 +47,7 @@ model User {
   receivedReviews  Review[]    @relation("ReviewTarget")
   sentMessages     Message[]   @relation("MessageSender")
   receivedMessages Message[]   @relation("MessageReceiver")
+  notifications    Notification[]
 }
 
 enum Role {
@@ -136,4 +149,16 @@ model Message {
   senderId   String
   receiver   User   @relation("MessageReceiver", fields: [receiverId], references: [id])
   receiverId String
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   // BOOKING_NEW, BOOKING_CONFIRMED, BOOKING_CANCELLED, MESSAGE_NEW, REVIEW_NEW
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  linkUrl   String?
+  createdAt DateTime @default(now())
 }

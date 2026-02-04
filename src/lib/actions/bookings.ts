@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { createNotification } from "./notifications";
 
 export async function createBooking(data: {
   cookId: string;
@@ -30,6 +31,20 @@ export async function createBooking(data: {
       total: data.total,
     },
   });
+
+  // Notify cook about new booking
+  try {
+    const customerName = session.user?.name || "A customer";
+    await createNotification({
+      userId: data.cookId,
+      type: "BOOKING_NEW",
+      title: "New Booking Request",
+      message: `${customerName} has requested a booking for ${data.guests} guest(s) — $${data.total}`,
+      linkUrl: "/dashboard/bookings",
+    });
+  } catch {
+    // Don't fail booking if notification fails
+  }
 
   return { success: true, bookingId: booking.id };
 }
@@ -80,6 +95,10 @@ export async function updateBookingStatus(
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
+    include: {
+      customer: { select: { name: true } },
+      cook: { select: { name: true } },
+    },
   });
 
   if (!booking) {
@@ -95,6 +114,31 @@ export async function updateBookingStatus(
     where: { id: bookingId },
     data: { status },
   });
+
+  // Send notification about status change
+  try {
+    if (status === "CONFIRMED") {
+      await createNotification({
+        userId: booking.customerId,
+        type: "BOOKING_CONFIRMED",
+        title: "Booking Confirmed!",
+        message: `${booking.cook.name || "Your cook"} has confirmed your booking`,
+        linkUrl: "/dashboard/bookings",
+      });
+    } else if (status === "CANCELLED") {
+      const notifyUserId = session.user.id === booking.cookId ? booking.customerId : booking.cookId;
+      const cancellerName = session.user.id === booking.cookId ? booking.cook.name : booking.customer.name;
+      await createNotification({
+        userId: notifyUserId,
+        type: "BOOKING_CANCELLED",
+        title: "Booking Cancelled",
+        message: `${cancellerName || "Someone"} has cancelled the booking`,
+        linkUrl: "/dashboard/bookings",
+      });
+    }
+  } catch {
+    // Don't fail status update if notification fails
+  }
 
   return { success: true, booking: updated };
 }
