@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 
 export async function getDishes(filters?: {
   cuisine?: string;
@@ -71,4 +72,82 @@ export async function getDish(id: string) {
   });
 
   return dish;
+}
+
+export async function createDish(data: {
+  name: string;
+  description: string;
+  price: number;
+  cuisine: string;
+  category: string;
+  image?: string;
+  preparationTime: number;
+  servingSize: number;
+  ingredients: string[];
+  allergens: string[];
+}) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { error: "You must be logged in" };
+  }
+
+  const dish = await prisma.dish.create({
+    data: {
+      ...data,
+      image: data.image || null,
+      cookId: session.user.id,
+    },
+  });
+
+  return { success: true, dishId: dish.id };
+}
+
+export async function updateDish(
+  dishId: string,
+  data: {
+    name?: string;
+    description?: string;
+    price?: number;
+    cuisine?: string;
+    category?: string;
+    image?: string;
+    preparationTime?: number;
+    servingSize?: number;
+    ingredients?: string[];
+    allergens?: string[];
+    available?: boolean;
+  }
+) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { error: "You must be logged in" };
+  }
+
+  const dish = await prisma.dish.findUnique({ where: { id: dishId } });
+  if (!dish || dish.cookId !== session.user.id) {
+    return { error: "Dish not found or unauthorized" };
+  }
+
+  const updated = await prisma.dish.update({
+    where: { id: dishId },
+    data,
+  });
+
+  return { success: true, dish: updated };
+}
+
+export async function deleteDish(dishId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { error: "You must be logged in" };
+  }
+
+  const dish = await prisma.dish.findUnique({ where: { id: dishId } });
+  if (!dish || dish.cookId !== session.user.id) {
+    return { error: "Dish not found or unauthorized" };
+  }
+
+  await prisma.dish.delete({ where: { id: dishId } });
+
+  return { success: true };
 }

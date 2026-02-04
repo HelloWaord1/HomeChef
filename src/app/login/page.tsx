@@ -34,7 +34,7 @@ export default function LoginPage() {
       if (result?.error) {
         setError("Invalid email or password");
       } else {
-        router.push("/");
+        router.push("/dashboard");
         router.refresh();
       }
     } catch {
@@ -58,7 +58,7 @@ export default function LoginPage() {
               <ChefHat className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold tracking-tight text-stone-900">
-              Home<span className="text-warm-700">Chef</span>
+              Free<span className="text-warm-700">Chef</span>
             </span>
           </Link>
           <p className="text-stone-500 text-sm">Welcome back! Sign in to your account.</p>

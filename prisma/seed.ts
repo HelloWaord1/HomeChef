@@ -19,7 +19,7 @@ async function main() {
   // Create cooks
   const nino = await prisma.user.create({
     data: {
-      email: "nino@homechef.com",
+      email: "nino@freechef.com",
       name: "Nino Kapanadze",
       password: hashedPassword,
       role: "COOK",
@@ -36,7 +36,7 @@ async function main() {
 
   const marco = await prisma.user.create({
     data: {
-      email: "marco@homechef.com",
+      email: "marco@freechef.com",
       name: "Marco Rossi",
       password: hashedPassword,
       role: "COOK",
@@ -53,7 +53,7 @@ async function main() {
 
   const yuki = await prisma.user.create({
     data: {
-      email: "yuki@homechef.com",
+      email: "yuki@freechef.com",
       name: "Yuki Tanaka",
       password: hashedPassword,
       role: "COOK",
@@ -70,7 +70,7 @@ async function main() {
 
   const elena = await prisma.user.create({
     data: {
-      email: "elena@homechef.com",
+      email: "elena@freechef.com",
       name: "Elena Vargas",
       password: hashedPassword,
       role: "COOK",
@@ -87,7 +87,7 @@ async function main() {
 
   const priya = await prisma.user.create({
     data: {
-      email: "priya@homechef.com",
+      email: "priya@freechef.com",
       name: "Priya Sharma",
       password: hashedPassword,
       role: "COOK",
@@ -104,7 +104,7 @@ async function main() {
 
   const olga = await prisma.user.create({
     data: {
-      email: "olga@homechef.com",
+      email: "olga@freechef.com",
       name: "Olga Petrova",
       password: hashedPassword,
       role: "COOK",
@@ -121,7 +121,7 @@ async function main() {
 
   const somchai = await prisma.user.create({
     data: {
-      email: "somchai@homechef.com",
+      email: "somchai@freechef.com",
       name: "Somchai Prasert",
       password: hashedPassword,
       role: "COOK",
@@ -138,7 +138,7 @@ async function main() {
 
   const layla = await prisma.user.create({
     data: {
-      email: "layla@homechef.com",
+      email: "layla@freechef.com",
       name: "Layla Khoury",
       password: hashedPassword,
       role: "COOK",
@@ -155,7 +155,7 @@ async function main() {
 
   const pierre = await prisma.user.create({
     data: {
-      email: "pierre@homechef.com",
+      email: "pierre@freechef.com",
       name: "Pierre Dubois",
       password: hashedPassword,
       role: "COOK",
@@ -172,7 +172,7 @@ async function main() {
 
   const minjun = await prisma.user.create({
     data: {
-      email: "minjun@homechef.com",
+      email: "minjun@freechef.com",
       name: "Min-jun Park",
       password: hashedPassword,
       role: "COOK",
@@ -711,6 +711,100 @@ async function main() {
       comment: "Priya did a Diwali dinner for 30 guests. Every dish was perfect. Our guests are still talking about it.",
       authorId: customer1.id,
       targetId: priya.id,
+    },
+  });
+
+  // Create sample bookings
+  const ninoDishes = await prisma.dish.findMany({ where: { cookId: nino.id }, take: 1 });
+  const marcoDishes = await prisma.dish.findMany({ where: { cookId: marco.id }, take: 1 });
+
+  await prisma.booking.create({
+    data: {
+      customerId: customer1.id,
+      cookId: nino.id,
+      dishId: ninoDishes[0]?.id,
+      date: new Date("2026-02-10T19:00:00"),
+      guests: 4,
+      notes: "We'd love the full Georgian experience!",
+      total: 140,
+      status: "CONFIRMED",
+    },
+  });
+
+  await prisma.booking.create({
+    data: {
+      customerId: customer2.id,
+      cookId: marco.id,
+      dishId: marcoDishes[0]?.id,
+      date: new Date("2026-02-12T20:00:00"),
+      guests: 2,
+      total: 90,
+      status: "PENDING",
+    },
+  });
+
+  await prisma.booking.create({
+    data: {
+      customerId: customer1.id,
+      cookId: marco.id,
+      date: new Date("2026-01-15T19:00:00"),
+      guests: 6,
+      notes: "Birthday dinner",
+      total: 270,
+      status: "COMPLETED",
+    },
+  });
+
+  await prisma.booking.create({
+    data: {
+      customerId: customer2.id,
+      cookId: nino.id,
+      dishId: ninoDishes[0]?.id,
+      date: new Date("2026-02-20T18:00:00"),
+      guests: 8,
+      total: 280,
+      status: "PENDING",
+    },
+  });
+
+  // Create sample messages
+  await prisma.message.create({
+    data: {
+      senderId: customer1.id,
+      receiverId: nino.id,
+      content: "Hi Nino! I loved the khinkali at your last event. Can you cater my birthday?",
+    },
+  });
+
+  await prisma.message.create({
+    data: {
+      senderId: nino.id,
+      receiverId: customer1.id,
+      content: "Of course, Sarah! I'd love to. How many guests and when?",
+    },
+  });
+
+  await prisma.message.create({
+    data: {
+      senderId: customer1.id,
+      receiverId: nino.id,
+      content: "About 12 guests, February 25th. Can you do a full Georgian spread?",
+    },
+  });
+
+  await prisma.message.create({
+    data: {
+      senderId: customer2.id,
+      receiverId: marco.id,
+      content: "Marco, is it possible to get a tiramisu for a dinner party next week?",
+    },
+  });
+
+  await prisma.message.create({
+    data: {
+      senderId: marco.id,
+      receiverId: customer2.id,
+      content: "Absolutely David! I can do a full Italian menu if you're interested. Fresh pasta, tiramisu, the works.",
     },
   });
 
