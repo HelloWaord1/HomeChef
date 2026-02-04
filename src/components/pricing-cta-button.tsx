@@ -1,6 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
@@ -15,6 +16,8 @@ export function PricingCtaButton({
   popular,
   variant,
 }: PricingCtaButtonProps) {
+  const t = useTranslations("common");
+
   return (
     <Button
       className={`w-full rounded-full h-11 text-sm font-semibold mb-6 ${
@@ -23,9 +26,7 @@ export function PricingCtaButton({
           : "border-stone-200"
       }`}
       variant={variant}
-      onClick={() =>
-        toast.info("Coming soon! We're launching this feature shortly.")
-      }
+      onClick={() => toast.info(t("comingSoon"))}
     >
       {label}
       <ArrowRight className="w-4 h-4 ml-1" />

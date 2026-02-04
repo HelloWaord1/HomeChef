@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { createDish, updateDish, deleteDish } from "@/lib/actions/dishes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,6 +44,7 @@ export function DishesClient({
 }: {
   dishes: Dish[];
 }) {
+  const t = useTranslations("dishesManage");
   const [dishes, setDishes] = useState(initialDishes);
   const [showForm, setShowForm] = useState(false);
   const [editingDish, setEditingDish] = useState<Dish | null>(null);
@@ -51,9 +53,9 @@ export function DishesClient({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">My Dishes</h1>
+          <h1 className="text-2xl font-bold text-stone-900">{t("title")}</h1>
           <p className="text-stone-500 text-sm mt-1">
-            Manage your menu — {dishes.length} dish{dishes.length !== 1 ? "es" : ""}
+            {t("subtitle", { count: dishes.length })}
           </p>
         </div>
         <Button
@@ -64,7 +66,7 @@ export function DishesClient({
           className="bg-warm-700 hover:bg-warm-800 text-white rounded-full"
           size="sm"
         >
-          <Plus className="w-4 h-4 mr-1" /> Add Dish
+          <Plus className="w-4 h-4 mr-1" /> {t("addDish")}
         </Button>
       </div>
 
@@ -94,13 +96,13 @@ export function DishesClient({
       {dishes.length === 0 && !showForm ? (
         <div className="bg-white rounded-2xl border border-stone-100 p-12 text-center">
           <UtensilsCrossed className="w-12 h-12 text-stone-200 mx-auto mb-3" />
-          <p className="text-stone-400 mb-4">No dishes yet. Add your first dish!</p>
+          <p className="text-stone-400 mb-4">{t("noDishes")}</p>
           <Button
             onClick={() => setShowForm(true)}
             className="bg-warm-700 hover:bg-warm-800 text-white rounded-full"
             size="sm"
           >
-            <Plus className="w-4 h-4 mr-1" /> Add Dish
+            <Plus className="w-4 h-4 mr-1" /> {t("addDish")}
           </Button>
         </div>
       ) : (

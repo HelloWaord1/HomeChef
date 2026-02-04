@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { sendMessage, getConversation } from "@/lib/actions/messages";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,6 +49,7 @@ export function MessagesClient({
   conversations: Conversation[];
   currentUserId: string;
 }) {
+  const t = useTranslations("messagesPage");
   const [activePartner, setActivePartner] = useState<Conversation["partner"]>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
@@ -60,7 +62,7 @@ export function MessagesClient({
       const msgs = await getConversation(partner.id);
       setMessages(msgs);
     } catch {
-      toast.error("Failed to load messages");
+      toast.error(t("failedLoad"));
     } finally {
       setLoadingMessages(false);
     }
@@ -89,18 +91,18 @@ export function MessagesClient({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-stone-900">Messages</h1>
+        <h1 className="text-2xl font-bold text-stone-900">{t("title")}</h1>
         <p className="text-stone-500 text-sm mt-1">
-          Your conversations with cooks and customers
+          {t("subtitle")}
         </p>
       </div>
 
       {conversations.length === 0 ? (
         <div className="bg-white rounded-2xl border border-stone-100 p-12 text-center">
           <MessageCircle className="w-12 h-12 text-stone-200 mx-auto mb-3" />
-          <p className="text-stone-400">No conversations yet</p>
+          <p className="text-stone-400">{t("noConversations")}</p>
           <p className="text-xs text-stone-300 mt-1">
-            Messages will appear here when you start chatting
+            {t("noConversationsHint")}
           </p>
         </div>
       ) : (

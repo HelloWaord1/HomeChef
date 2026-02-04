@@ -1,7 +1,10 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { ChefHat } from "lucide-react";
 
 export function Footer() {
+  const t = useTranslations("footer");
+
   return (
     <footer className="bg-stone-950 text-stone-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -13,121 +16,54 @@ export function Footer() {
                 <ChefHat className="w-4 h-4 text-white" />
               </div>
               <span className="text-lg font-bold text-white">
-                Home<span className="text-warm-400">Chef</span>
+                Free<span className="text-warm-400">Chef</span>
               </span>
             </Link>
             <p className="text-sm leading-relaxed text-stone-500">
-              Connecting home cooks with food lovers. Real meals, real people,
-              real neighborhoods.
+              {t("tagline")}
             </p>
           </div>
 
           {/* Links */}
           <div>
             <h4 className="text-sm font-semibold text-stone-200 mb-4 uppercase tracking-wider">
-              Discover
+              {t("discover")}
             </h4>
             <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/cooks"
-                  className="text-sm hover:text-white transition-colors"
-                >
-                  Browse Cooks
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/dishes"
-                  className="text-sm hover:text-white transition-colors"
-                >
-                  Browse Dishes
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/events"
-                  className="text-sm hover:text-white transition-colors"
-                >
-                  Cooking Events
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/for-cooks"
-                  className="text-sm hover:text-white transition-colors"
-                >
-                  Become a Cook
-                </Link>
-              </li>
+              <li><Link href="/cooks" className="text-sm hover:text-white transition-colors">{t("browseCooks")}</Link></li>
+              <li><Link href="/dishes" className="text-sm hover:text-white transition-colors">{t("browseDishes")}</Link></li>
+              <li><Link href="/events" className="text-sm hover:text-white transition-colors">{t("cookingEvents")}</Link></li>
+              <li><Link href="/for-cooks" className="text-sm hover:text-white transition-colors">{t("becomeCook")}</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-sm font-semibold text-stone-200 mb-4 uppercase tracking-wider">
-              Company
+              {t("company")}
             </h4>
             <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/about"
-                  className="text-sm hover:text-white transition-colors"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/pricing"
-                  className="text-sm hover:text-white transition-colors"
-                >
-                  Pricing
-                </Link>
-              </li>
-              <li>
-                <span className="text-sm text-stone-600 cursor-default">
-                  Careers
-                </span>
-              </li>
+              <li><Link href="/about" className="text-sm hover:text-white transition-colors">{t("aboutUs")}</Link></li>
+              <li><Link href="/pricing" className="text-sm hover:text-white transition-colors">{t("pricing")}</Link></li>
+              <li><span className="text-sm text-stone-600 cursor-default">{t("careers")}</span></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-sm font-semibold text-stone-200 mb-4 uppercase tracking-wider">
-              Support
+              {t("support")}
             </h4>
             <ul className="space-y-3">
-              <li>
-                <span className="text-sm text-stone-600 cursor-default">
-                  Help Center
-                </span>
-              </li>
-              <li>
-                <span className="text-sm text-stone-600 cursor-default">
-                  Safety
-                </span>
-              </li>
-              <li>
-                <span className="text-sm text-stone-600 cursor-default">
-                  Terms of Service
-                </span>
-              </li>
-              <li>
-                <span className="text-sm text-stone-600 cursor-default">
-                  Privacy
-                </span>
-              </li>
+              <li><span className="text-sm text-stone-600 cursor-default">{t("helpCenter")}</span></li>
+              <li><span className="text-sm text-stone-600 cursor-default">{t("safety")}</span></li>
+              <li><span className="text-sm text-stone-600 cursor-default">{t("terms")}</span></li>
+              <li><span className="text-sm text-stone-600 cursor-default">{t("privacy")}</span></li>
             </ul>
           </div>
         </div>
 
         <div className="mt-12 pt-8 border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-stone-600">
-            © 2025 FreeChef. All rights reserved.
-          </p>
-          <p className="text-xs text-stone-600">
-            Made with 🧡 for home cooks everywhere
-          </p>
+          <p className="text-xs text-stone-600">{t("copyright")}</p>
+          <p className="text-xs text-stone-600">{t("madeWith")}</p>
         </div>
       </div>
     </footer>

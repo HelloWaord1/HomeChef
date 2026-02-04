@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ interface JoinEventButtonProps {
 export function JoinEventButton({ eventId, hostId, pricePerGuest, eventDate }: JoinEventButtonProps) {
   const { data: session } = useSession();
   const router = useRouter();
+  const t = useTranslations("joinEvent");
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [guests, setGuests] = useState(1);
@@ -27,7 +29,7 @@ export function JoinEventButton({ eventId, hostId, pricePerGuest, eventDate }: J
 
   async function handleJoin() {
     if (!session?.user) {
-      toast.error("Please log in to join an event");
+      toast.error(t("loginRequired"));
       router.push("/login");
       return;
     }
@@ -51,12 +53,12 @@ export function JoinEventButton({ eventId, hostId, pricePerGuest, eventDate }: J
       if (result.error) {
         toast.error(result.error);
       } else {
-        toast.success("You've joined the event!");
+        toast.success(t("joined"));
         setShowForm(false);
-        router.refresh();
+        router.push("/events/" + eventId);
       }
     } catch {
-      toast.error("Failed to join event");
+      toast.error(t("failed"));
     } finally {
       setLoading(false);
     }
@@ -69,7 +71,7 @@ export function JoinEventButton({ eventId, hostId, pricePerGuest, eventDate }: J
         onClick={handleJoin}
       >
         <Send className="w-4 h-4 mr-2" />
-        Join Event
+        {t("title")}
       </Button>
 
       {showForm && (
@@ -82,14 +84,14 @@ export function JoinEventButton({ eventId, hostId, pricePerGuest, eventDate }: J
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-xl font-bold text-stone-900 mb-1">Join Event</h2>
+            <h2 className="text-xl font-bold text-stone-900 mb-1">{t("title")}</h2>
             <p className="text-sm text-stone-500 mb-6">
-              ${pricePerGuest} per guest
+              {t("pricePerGuest", { price: pricePerGuest })}
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-stone-700">Number of Guests</Label>
+                <Label className="text-stone-700">{t("numberOfGuests")}</Label>
                 <Input
                   type="number"
                   min={1}
@@ -102,11 +104,11 @@ export function JoinEventButton({ eventId, hostId, pricePerGuest, eventDate }: J
               </div>
 
               <div className="space-y-2">
-                <Label className="text-stone-700">Notes (optional)</Label>
+                <Label className="text-stone-700">{t("notes")}</Label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Any dietary requirements or questions..."
+                  placeholder={t("notesPlaceholder")}
                   rows={3}
                   className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-warm-500/20 focus:border-warm-500 transition-all resize-none"
                 />
@@ -114,7 +116,7 @@ export function JoinEventButton({ eventId, hostId, pricePerGuest, eventDate }: J
 
               <div className="p-3 rounded-xl bg-warm-50 border border-warm-100">
                 <p className="text-sm text-warm-700 font-medium">
-                  Total: ${pricePerGuest * guests} for {guests} {guests === 1 ? "guest" : "guests"}
+                  {t("total", { total: pricePerGuest * guests, count: guests })}
                 </p>
               </div>
 
@@ -124,9 +126,9 @@ export function JoinEventButton({ eventId, hostId, pricePerGuest, eventDate }: J
                 className="w-full h-11 bg-warm-700 hover:bg-warm-800 text-white font-medium rounded-xl"
               >
                 {loading ? (
-                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Joining...</>
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("joining")}</>
                 ) : (
-                  "Confirm & Join"
+                  t("confirm")
                 )}
               </Button>
             </form>

@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
 import { ComingSoonButton } from "@/components/coming-soon-button";
 import { Clock, Users, Plus } from "lucide-react";
@@ -13,6 +14,8 @@ interface DishCardProps {
 }
 
 export function DishCard({ dish, index = 0 }: DishCardProps) {
+  const t = useTranslations("dishes");
+
   return (
     <article
       className="bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-lg hover:border-stone-200 transition-all duration-300 group"
@@ -71,7 +74,7 @@ export function DishCard({ dish, index = 0 }: DishCardProps) {
             href={`/cooks/${dish.cookSlug}`}
             className="text-xs text-warm-600 hover:text-warm-700 font-medium mb-2 inline-block"
           >
-            by {dish.cookName}
+            {t("by")} {dish.cookName}
           </Link>
         )}
 
@@ -96,7 +99,7 @@ export function DishCard({ dish, index = 0 }: DishCardProps) {
             className="rounded-full bg-warm-600 hover:bg-warm-700 text-white h-8 px-3 text-xs"
           >
             <Plus className="w-3 h-3 mr-1" />
-            Add
+            {t("add")}
           </ComingSoonButton>
         </div>
       </div>

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,8 @@ interface BookCookButtonProps {
 export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
   const { data: session } = useSession();
   const router = useRouter();
+  const t = useTranslations("bookCook");
+  const tc = useTranslations("cooks");
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState("");
@@ -27,7 +30,7 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
 
   async function handleBook() {
     if (!session?.user) {
-      toast.error("Please log in to book a cook");
+      toast.error(t("loginToBook"));
       router.push("/login");
       return;
     }
@@ -50,12 +53,12 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
       if (result.error) {
         toast.error(result.error);
       } else {
-        toast.success("Booking request sent! The cook will respond shortly.");
+        toast.success(t("requestSent"));
         setShowForm(false);
         router.push("/dashboard/bookings");
       }
     } catch {
-      toast.error("Failed to create booking");
+      toast.error(t("loginToBook"));
     } finally {
       setLoading(false);
     }
@@ -70,22 +73,22 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
           className="rounded-full border-stone-200 gap-1.5"
           onClick={() => {
             if (!session?.user) {
-              toast.error("Please log in to send messages");
+              toast.error(t("loginToMessage"));
               router.push("/login");
             } else {
-              toast.info("Messaging coming soon!");
+              toast.info(t("messagingComingSoon"));
             }
           }}
         >
           <Lock className="w-3.5 h-3.5" />
-          Message
+          {tc("message")}
         </Button>
         <Button
           size="sm"
           className="rounded-full bg-warm-700 hover:bg-warm-800 text-white"
           onClick={handleBook}
         >
-          Book Now
+          {tc("bookNow")}
         </Button>
       </div>
 
@@ -101,17 +104,17 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
             </button>
 
             <h2 className="text-xl font-bold text-stone-900 mb-1">
-              Book {cookName}
+              {t("bookTitle", { name: cookName })}
             </h2>
             <p className="text-sm text-stone-500 mb-6">
-              Fill in the details and the cook will confirm your booking.
+              {t("bookDesc")}
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label className="text-stone-700 flex items-center gap-1.5">
                   <CalendarDays className="w-3.5 h-3.5" />
-                  Date
+                  {t("date")}
                 </Label>
                 <Input
                   type="datetime-local"
@@ -125,7 +128,7 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
               <div className="space-y-2">
                 <Label className="text-stone-700 flex items-center gap-1.5">
                   <Users className="w-3.5 h-3.5" />
-                  Number of Guests
+                  {t("numberOfGuests")}
                 </Label>
                 <Input
                   type="number"
@@ -139,7 +142,7 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-stone-700">Budget ($)</Label>
+                <Label className="text-stone-700">{t("budget")}</Label>
                 <Input
                   type="number"
                   min={10}
@@ -154,12 +157,12 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
               <div className="space-y-2">
                 <Label className="text-stone-700 flex items-center gap-1.5">
                   <MessageSquare className="w-3.5 h-3.5" />
-                  Notes (optional)
+                  {t("notes")}
                 </Label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Any dietary requirements, menu preferences, or special requests..."
+                  placeholder={t("notesPlaceholder")}
                   rows={3}
                   className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-warm-500/20 focus:border-warm-500 transition-all resize-none"
                 />
@@ -171,9 +174,9 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
                 className="w-full h-11 bg-warm-700 hover:bg-warm-800 text-white font-medium rounded-xl"
               >
                 {loading ? (
-                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending...</>
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("sending")}</>
                 ) : (
-                  "Send Booking Request"
+                  t("sendRequest")
                 )}
               </Button>
             </form>

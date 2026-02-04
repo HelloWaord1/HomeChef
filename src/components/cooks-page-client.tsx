@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { CookCard } from "@/components/cook-card";
 import { Input } from "@/components/ui/input";
 import { cuisineTypes, cities } from "@/lib/data";
@@ -29,6 +30,7 @@ interface CooksPageClientProps {
 }
 
 export function CooksPageClient({ cooks }: CooksPageClientProps) {
+  const t = useTranslations("cooks");
   const [selectedCuisine, setSelectedCuisine] = useState("All");
   const [selectedCity, setSelectedCity] = useState("All");
   const [availableOnly, setAvailableOnly] = useState(false);
@@ -73,23 +75,16 @@ export function CooksPageClient({ cooks }: CooksPageClientProps) {
   return (
     <div className="pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-3">
-            Find a Cook
-          </h1>
-          <p className="text-stone-500 max-w-xl">
-            Browse talented home cooks worldwide. Filter by city, cuisine,
-            and availability. Subscribe or buy contacts individually.
-          </p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-3">{t("title")}</h1>
+          <p className="text-stone-500 max-w-xl">{t("subtitle")}</p>
         </div>
 
-        {/* Filters */}
         <div className="mb-8 space-y-4">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
             <Input
-              placeholder="Search by name, city, or cuisine..."
+              placeholder={t("searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 h-11 rounded-xl bg-white border-stone-200 text-sm"
@@ -97,7 +92,7 @@ export function CooksPageClient({ cooks }: CooksPageClientProps) {
           </div>
 
           <div>
-            <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">City</p>
+            <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">{t("city")}</p>
             <div className="flex flex-wrap gap-2">
               {cities.map((city) => (
                 <button
@@ -116,7 +111,7 @@ export function CooksPageClient({ cooks }: CooksPageClientProps) {
           </div>
 
           <div>
-            <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">Cuisine</p>
+            <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">{t("cuisine")}</p>
             <div className="flex flex-wrap gap-2">
               {cuisineTypes.slice(0, 12).map((cuisine) => (
                 <button
@@ -135,7 +130,7 @@ export function CooksPageClient({ cooks }: CooksPageClientProps) {
           </div>
 
           <div>
-            <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">Status</p>
+            <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">{t("status")}</p>
             <button
               onClick={() => setAvailableOnly(!availableOnly)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
@@ -144,17 +139,16 @@ export function CooksPageClient({ cooks }: CooksPageClientProps) {
                   : "bg-white text-stone-600 border border-stone-200 hover:border-emerald-300"
               }`}
             >
-              Available now
+              {t("availableNow")}
             </button>
           </div>
         </div>
 
-        {/* Results */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <p className="text-sm text-stone-500">
               <span className="font-semibold text-stone-700">{filteredCooks.length}</span>{" "}
-              {filteredCooks.length === 1 ? "cook" : "cooks"} found
+              {t("cookFound", { count: filteredCooks.length })}
             </p>
             {activeFilters > 0 && (
               <button
@@ -162,13 +156,13 @@ export function CooksPageClient({ cooks }: CooksPageClientProps) {
                 className="flex items-center gap-1 text-xs text-warm-600 hover:text-warm-700 font-medium"
               >
                 <X className="w-3 h-3" />
-                Clear filters
+                {t("clearFilters")}
               </button>
             )}
           </div>
           <div className="flex items-center gap-2 text-xs text-stone-500">
             <SlidersHorizontal className="w-3.5 h-3.5" />
-            Sort by: Rating
+            {t("sortByRating")}
           </div>
         </div>
 
@@ -183,10 +177,10 @@ export function CooksPageClient({ cooks }: CooksPageClientProps) {
             <div className="w-16 h-16 rounded-2xl bg-stone-100 flex items-center justify-center mx-auto mb-4">
               <Search className="w-7 h-7 text-stone-400" />
             </div>
-            <h3 className="text-lg font-semibold text-stone-700 mb-2">No cooks found</h3>
-            <p className="text-sm text-stone-500 mb-4">Try adjusting your filters or search query.</p>
+            <h3 className="text-lg font-semibold text-stone-700 mb-2">{t("noCooksFound")}</h3>
+            <p className="text-sm text-stone-500 mb-4">{t("noCooksHint")}</p>
             <button onClick={clearFilters} className="text-sm text-warm-600 hover:text-warm-700 font-medium">
-              Clear all filters
+              {t("clearAll")}
             </button>
           </div>
         )}
