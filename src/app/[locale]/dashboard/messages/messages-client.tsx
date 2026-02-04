@@ -1,19 +1,9 @@
 "use client";
 
-import { useState, useTransition, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { sendMessage, getConversation } from "@/lib/actions/messages";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
-import {
-  MessageCircle,
-  Send,
-  Loader2,
-  ArrowLeft,
-  ChefHat,
-} from "lucide-react";
-import { toast } from "sonner";
+import { MessageCircle } from "lucide-react";
 
 type Conversation = {
   partner: {
@@ -32,16 +22,6 @@ type Conversation = {
   unreadCount: number;
 };
 
-type Message = {
-  id: string;
-  content: string;
-  createdAt: Date;
-  senderId: string;
-  receiverId: string;
-  read: boolean;
-  sender: { id: string; name: string | null; avatar: string | null };
-};
-
 export function MessagesClient({
   conversations,
   currentUserId,
@@ -50,51 +30,12 @@ export function MessagesClient({
   currentUserId: string;
 }) {
   const t = useTranslations("messagesPage");
-  const [activePartner, setActivePartner] = useState<Conversation["partner"]>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loadingMessages, setLoadingMessages] = useState(false);
-
-  async function openConversation(partner: Conversation["partner"]) {
-    if (!partner) return;
-    setActivePartner(partner);
-    setLoadingMessages(true);
-    try {
-      const msgs = await getConversation(partner.id);
-      setMessages(msgs);
-    } catch {
-      toast.error(t("failedLoad"));
-    } finally {
-      setLoadingMessages(false);
-    }
-  }
-
-  if (activePartner) {
-    return (
-      <div className="space-y-4">
-        <button
-          onClick={() => setActivePartner(null)}
-          className="flex items-center gap-2 text-sm text-stone-500 hover:text-stone-700 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to conversations
-        </button>
-        <ConversationView
-          partner={activePartner}
-          messages={messages}
-          currentUserId={currentUserId}
-          loading={loadingMessages}
-          onNewMessage={(msg) => setMessages((prev) => [...prev, msg])}
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-stone-900">{t("title")}</h1>
-        <p className="text-stone-500 text-sm mt-1">
-          {t("subtitle")}
-        </p>
+        <p className="text-stone-500 text-sm mt-1">{t("subtitle")}</p>
       </div>
 
       {conversations.length === 0 ? (
@@ -108,10 +49,10 @@ export function MessagesClient({
       ) : (
         <div className="bg-white rounded-2xl border border-stone-100 shadow-sm divide-y divide-stone-50">
           {conversations.map((conv) => (
-            <button
+            <Link
               key={conv.partner?.id}
-              onClick={() => openConversation(conv.partner)}
-              className="w-full flex items-center gap-3 p-4 hover:bg-stone-50/50 transition-colors text-left"
+              href={`/dashboard/messages/${conv.partner?.id}`}
+              className="w-full flex items-center gap-3 p-4 hover:bg-stone-50/50 transition-colors text-left block"
             >
               {conv.partner?.avatar ? (
                 <img
@@ -135,7 +76,7 @@ export function MessagesClient({
                         variant="secondary"
                         className="text-[9px] px-1 py-0 bg-warm-50 text-warm-700"
                       >
-                        Cook
+                        {t("cookBadge")}
                       </Badge>
                     )}
                   </div>
@@ -148,9 +89,9 @@ export function MessagesClient({
                 <div className="flex items-center justify-between mt-0.5">
                   <p className="text-xs text-stone-400 truncate">
                     {conv.lastMessage?.senderId === currentUserId && (
-                      <span className="text-stone-300">You: </span>
+                      <span className="text-stone-300">{t("you")} </span>
                     )}
-                    {conv.lastMessage?.content || "No messages"}
+                    {conv.lastMessage?.content || t("noMessages")}
                   </p>
                   {conv.unreadCount > 0 && (
                     <span className="w-5 h-5 rounded-full bg-warm-700 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 ml-2">
@@ -159,160 +100,10 @@ export function MessagesClient({
                   )}
                 </div>
               </div>
-            </button>
+            </Link>
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-function ConversationView({
-  partner,
-  messages,
-  currentUserId,
-  loading,
-  onNewMessage,
-}: {
-  partner: NonNullable<Conversation["partner"]>;
-  messages: Message[];
-  currentUserId: string;
-  loading: boolean;
-  onNewMessage: (msg: Message) => void;
-}) {
-  const [text, setText] = useState("");
-  const [isPending, startTransition] = useTransition();
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  async function handleSend(e: React.FormEvent) {
-    e.preventDefault();
-    if (!text.trim()) return;
-
-    const content = text.trim();
-    setText("");
-
-    startTransition(async () => {
-      const result = await sendMessage({
-        receiverId: partner.id,
-        content,
-      });
-
-      if (result.error) {
-        toast.error(result.error);
-        setText(content);
-      } else {
-        onNewMessage({
-          id: result.messageId!,
-          content,
-          createdAt: new Date(),
-          senderId: currentUserId,
-          receiverId: partner.id,
-          read: false,
-          sender: { id: currentUserId, name: "You", avatar: null },
-        });
-      }
-    });
-  }
-
-  return (
-    <div className="bg-white rounded-2xl border border-stone-100 shadow-sm flex flex-col h-[calc(100vh-14rem)]">
-      {/* Header */}
-      <div className="flex items-center gap-3 px-5 py-3 border-b border-stone-100">
-        {partner.avatar ? (
-          <img
-            src={partner.avatar}
-            alt=""
-            className="w-9 h-9 rounded-xl object-cover"
-          />
-        ) : (
-          <div className="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center text-sm font-medium text-stone-500">
-            {partner.name?.[0] || "?"}
-          </div>
-        )}
-        <div>
-          <p className="font-medium text-stone-900 text-sm">{partner.name}</p>
-          <p className="text-xs text-stone-400 capitalize">
-            {partner.role.toLowerCase()}
-          </p>
-        </div>
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-3">
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-stone-300" />
-          </div>
-        ) : messages.length === 0 ? (
-          <div className="text-center py-12">
-            <ChefHat className="w-10 h-10 text-stone-200 mx-auto mb-2" />
-            <p className="text-sm text-stone-400">
-              Start the conversation with {partner.name?.split(" ")[0]}
-            </p>
-          </div>
-        ) : (
-          messages.map((msg) => {
-            const isMine = msg.senderId === currentUserId;
-            return (
-              <div
-                key={msg.id}
-                className={`flex ${isMine ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[75%] px-3.5 py-2.5 rounded-2xl text-sm ${
-                    isMine
-                      ? "bg-warm-700 text-white rounded-br-md"
-                      : "bg-stone-100 text-stone-800 rounded-bl-md"
-                  }`}
-                >
-                  <p>{msg.content}</p>
-                  <p
-                    className={`text-[10px] mt-1 ${
-                      isMine ? "text-warm-200" : "text-stone-400"
-                    }`}
-                  >
-                    {new Date(msg.createdAt).toLocaleTimeString("en-US", {
-                      hour: "numeric",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                </div>
-              </div>
-            );
-          })
-        )}
-        <div ref={bottomRef} />
-      </div>
-
-      {/* Input */}
-      <form
-        onSubmit={handleSend}
-        className="flex items-center gap-2 px-4 py-3 border-t border-stone-100"
-      >
-        <Input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Type a message..."
-          className="border-stone-200 rounded-full"
-          disabled={isPending}
-        />
-        <Button
-          type="submit"
-          size="icon"
-          disabled={isPending || !text.trim()}
-          className="bg-warm-700 hover:bg-warm-800 text-white rounded-full flex-shrink-0"
-        >
-          {isPending ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Send className="w-4 h-4" />
-          )}
-        </Button>
-      </form>
     </div>
   );
 }

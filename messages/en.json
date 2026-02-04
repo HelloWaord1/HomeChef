@@ -405,7 +405,8 @@
     "bookingsNav": "Bookings",
     "myDishes": "My Dishes",
     "messagesNav": "Messages",
-    "reviewsNav": "Reviews"
+    "reviewsNav": "Reviews",
+    "settingsNav": "Settings"
   },
   "bookings": {
     "title": "Bookings",
@@ -551,6 +552,35 @@
     "submit": "Submit",
     "back": "Back",
     "viewAll": "View all"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your profile and account preferences",
+    "profilePhoto": "Profile Photo",
+    "uploadPhoto": "Upload Photo",
+    "changePhoto": "Change Photo",
+    "photoHint": "JPG, PNG or WebP. Max 5MB.",
+    "uploadFailed": "Upload failed. Please try again.",
+    "avatarUpdated": "Profile photo updated!",
+    "personalInfo": "Personal Information",
+    "name": "Full Name",
+    "email": "Email",
+    "bio": "Bio",
+    "bioPlaceholder": "Tell us about yourself...",
+    "phone": "Phone",
+    "phonePlaceholder": "+1 (555) 123-4567",
+    "location": "Location",
+    "locationPlaceholder": "City, Country",
+    "cookInfo": "Cook Details",
+    "cuisines": "Cuisines",
+    "cuisinesPlaceholder": "Georgian, Italian, Japanese",
+    "cuisinesHint": "Separate multiple cuisines with commas",
+    "accountType": "Account Type",
+    "accountTypeHint": "Your role on the platform",
+    "cook": "Cook",
+    "customer": "Customer",
+    "saveChanges": "Save Changes",
+    "profileUpdated": "Profile updated successfully!"
   },
   "languageSwitcher": {
     "en": "English",

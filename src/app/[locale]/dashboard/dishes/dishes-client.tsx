@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { createDish, updateDish, deleteDish } from "@/lib/actions/dishes";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,8 @@ import {
   UtensilsCrossed,
   Eye,
   EyeOff,
+  Upload,
+  ImageIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -276,6 +278,8 @@ function DishForm({
   onSaved: (dish: Dish) => void;
 }) {
   const [isPending, startTransition] = useTransition();
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({
     name: dish?.name || "",
     description: dish?.description || "",
@@ -433,14 +437,82 @@ function DishForm({
             </select>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-stone-700 text-sm">Image URL</Label>
-            <Input
-              name="image"
-              value={form.image}
-              onChange={handleChange}
-              placeholder="https://..."
-              className="border-stone-200"
-            />
+            <Label className="text-stone-700 text-sm">Dish Image</Label>
+            <div className="flex items-center gap-3">
+              {form.image ? (
+                <div className="relative group">
+                  <img
+                    src={form.image}
+                    alt="Dish preview"
+                    className="w-16 h-16 rounded-lg object-cover border border-stone-200"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm((prev) => ({ ...prev, image: "" }))
+                    }
+                    className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-[10px]"
+                  >
+                    <X className="w-2.5 h-2.5" />
+                  </button>
+                </div>
+              ) : (
+                <div className="w-16 h-16 rounded-lg bg-stone-50 border border-dashed border-stone-200 flex items-center justify-center">
+                  <ImageIcon className="w-5 h-5 text-stone-300" />
+                </div>
+              )}
+              <div className="flex-1 space-y-1.5">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploading(true);
+                    try {
+                      const fd = new FormData();
+                      fd.append("file", file);
+                      const res = await fetch("/api/upload", {
+                        method: "POST",
+                        body: fd,
+                      });
+                      if (res.ok) {
+                        const { url } = await res.json();
+                        setForm((prev) => ({ ...prev, image: url }));
+                      }
+                    } catch {
+                      // ignore
+                    } finally {
+                      setUploading(false);
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs rounded-full"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                >
+                  {uploading ? (
+                    <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                  ) : (
+                    <Upload className="w-3 h-3 mr-1" />
+                  )}
+                  Upload Image
+                </Button>
+                <Input
+                  name="image"
+                  value={form.image}
+                  onChange={handleChange}
+                  placeholder="Or paste URL..."
+                  className="border-stone-200 text-xs h-8"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

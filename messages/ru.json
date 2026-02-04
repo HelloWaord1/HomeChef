@@ -405,7 +405,8 @@
     "bookingsNav": "Бронирования",
     "myDishes": "Мои блюда",
     "messagesNav": "Сообщения",
-    "reviewsNav": "Отзывы"
+    "reviewsNav": "Отзывы",
+    "settingsNav": "Настройки"
   },
   "bookings": {
     "title": "Бронирования",
@@ -551,6 +552,35 @@
     "submit": "Отправить",
     "back": "Назад",
     "viewAll": "Смотреть все"
+  },
+  "settings": {
+    "title": "Настройки",
+    "subtitle": "Управляйте профилем и настройками аккаунта",
+    "profilePhoto": "Фото профиля",
+    "uploadPhoto": "Загрузить фото",
+    "changePhoto": "Изменить фото",
+    "photoHint": "JPG, PNG или WebP. Макс. 5 МБ.",
+    "uploadFailed": "Не удалось загрузить. Попробуйте снова.",
+    "avatarUpdated": "Фото профиля обновлено!",
+    "personalInfo": "Личная информация",
+    "name": "Полное имя",
+    "email": "Email",
+    "bio": "О себе",
+    "bioPlaceholder": "Расскажите о себе...",
+    "phone": "Телефон",
+    "phonePlaceholder": "+7 (999) 123-45-67",
+    "location": "Местоположение",
+    "locationPlaceholder": "Город, Страна",
+    "cookInfo": "Данные повара",
+    "cuisines": "Кухни",
+    "cuisinesPlaceholder": "Грузинская, Итальянская, Японская",
+    "cuisinesHint": "Укажите несколько кухонь через запятую",
+    "accountType": "Тип аккаунта",
+    "accountTypeHint": "Ваша роль на платформе",
+    "cook": "Повар",
+    "customer": "Заказчик",
+    "saveChanges": "Сохранить",
+    "profileUpdated": "Профиль успешно обновлён!"
   },
   "languageSwitcher": {
     "en": "English",

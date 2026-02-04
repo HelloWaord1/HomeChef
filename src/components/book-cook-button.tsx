@@ -9,7 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createBooking } from "@/lib/actions/bookings";
-import { Lock, X, Loader2, CalendarDays, Users, MessageSquare } from "lucide-react";
+import {
+  MessageCircle,
+  X,
+  Loader2,
+  CalendarDays,
+  Users,
+  MessageSquare,
+} from "lucide-react";
 
 interface BookCookButtonProps {
   cookId: string;
@@ -35,6 +42,16 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
       return;
     }
     setShowForm(true);
+  }
+
+  function handleMessage() {
+    if (!session?.user) {
+      toast.error(t("loginToMessage"));
+      router.push("/login");
+      return;
+    }
+    // Navigate to chat with this cook
+    router.push(`/dashboard/messages/${cookId}`);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -71,16 +88,9 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
           variant="outline"
           size="sm"
           className="rounded-full border-stone-200 gap-1.5"
-          onClick={() => {
-            if (!session?.user) {
-              toast.error(t("loginToMessage"));
-              router.push("/login");
-            } else {
-              toast.info(t("messagingComingSoon"));
-            }
-          }}
+          onClick={handleMessage}
         >
-          <Lock className="w-3.5 h-3.5" />
+          <MessageCircle className="w-3.5 h-3.5" />
           {tc("message")}
         </Button>
         <Button
@@ -106,9 +116,7 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
             <h2 className="text-xl font-bold text-stone-900 mb-1">
               {t("bookTitle", { name: cookName })}
             </h2>
-            <p className="text-sm text-stone-500 mb-6">
-              {t("bookDesc")}
-            </p>
+            <p className="text-sm text-stone-500 mb-6">{t("bookDesc")}</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
@@ -174,7 +182,10 @@ export function BookCookButton({ cookId, cookName }: BookCookButtonProps) {
                 className="w-full h-11 bg-warm-700 hover:bg-warm-800 text-white font-medium rounded-xl"
               >
                 {loading ? (
-                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("sending")}</>
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />{" "}
+                    {t("sending")}
+                  </>
                 ) : (
                   t("sendRequest")
                 )}

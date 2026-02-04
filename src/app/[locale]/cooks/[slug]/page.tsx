@@ -209,19 +209,14 @@ export default async function CookProfilePage({ params }: CookProfilePageProps) 
                 Want to message {cook.name?.split(" ")[0]} directly?
               </h3>
               <p className="text-sm text-stone-500">
-                Subscribe for unlimited messaging, or buy this cook&apos;s contact for a one-time fee.
+                Send a message to discuss your event, menu preferences, or ask questions.
               </p>
             </div>
             <div className="flex gap-2">
-              <Link href="/pricing">
-                <Button variant="outline" size="sm" className="rounded-full text-xs border-warm-200">
-                  <DollarSign className="w-3 h-3 mr-1" />
-                  $4.99 one-time
-                </Button>
-              </Link>
-              <Link href="/pricing">
+              <Link href={`/dashboard/messages/${cook.id}`}>
                 <Button size="sm" className="rounded-full bg-warm-700 hover:bg-warm-800 text-white text-xs">
-                  Subscribe — $14.99/mo
+                  <MessageCircle className="w-3 h-3 mr-1" />
+                  Message {cook.name?.split(" ")[0]}
                 </Button>
               </Link>
             </div>

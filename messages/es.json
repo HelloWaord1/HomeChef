@@ -405,7 +405,8 @@
     "bookingsNav": "Reservas",
     "myDishes": "Mis platos",
     "messagesNav": "Mensajes",
-    "reviewsNav": "Reseñas"
+    "reviewsNav": "Reseñas",
+    "settingsNav": "Ajustes"
   },
   "bookings": {
     "title": "Reservas",
@@ -551,6 +552,35 @@
     "submit": "Enviar",
     "back": "Atrás",
     "viewAll": "Ver todo"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "subtitle": "Gestiona tu perfil y preferencias de cuenta",
+    "profilePhoto": "Foto de perfil",
+    "uploadPhoto": "Subir foto",
+    "changePhoto": "Cambiar foto",
+    "photoHint": "JPG, PNG o WebP. Máx. 5 MB.",
+    "uploadFailed": "Error al subir. Inténtalo de nuevo.",
+    "avatarUpdated": "¡Foto de perfil actualizada!",
+    "personalInfo": "Información personal",
+    "name": "Nombre completo",
+    "email": "Email",
+    "bio": "Biografía",
+    "bioPlaceholder": "Cuéntanos sobre ti...",
+    "phone": "Teléfono",
+    "phonePlaceholder": "+34 600 123 456",
+    "location": "Ubicación",
+    "locationPlaceholder": "Ciudad, País",
+    "cookInfo": "Datos del cocinero",
+    "cuisines": "Cocinas",
+    "cuisinesPlaceholder": "Georgiana, Italiana, Japonesa",
+    "cuisinesHint": "Separa varias cocinas con comas",
+    "accountType": "Tipo de cuenta",
+    "accountTypeHint": "Tu rol en la plataforma",
+    "cook": "Cocinero",
+    "customer": "Cliente",
+    "saveChanges": "Guardar cambios",
+    "profileUpdated": "¡Perfil actualizado correctamente!"
   },
   "languageSwitcher": {
     "en": "English",
