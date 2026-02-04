@@ -11,9 +11,31 @@ import {
   ChefHat,
   Clock,
   ArrowRight,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+
+async function EmailVerificationBanner({ userId }: { userId: string }) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { emailVerified: true },
+  });
+
+  if (user?.emailVerified) return null;
+
+  return (
+    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-3 mb-4">
+      <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
+        <AlertTriangle className="w-4.5 h-4.5 text-amber-600" />
+      </div>
+      <div className="flex-1">
+        <p className="text-sm font-semibold text-amber-800">Email not verified</p>
+        <p className="text-xs text-amber-600">Please verify your email address to unlock all features.</p>
+      </div>
+    </div>
+  );
+}
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -23,10 +45,20 @@ export default async function DashboardPage() {
   const role = (session.user as { role?: string }).role;
 
   if (role === "COOK") {
-    return <CookDashboard userId={userId} name={session.user.name || "Chef"} />;
+    return (
+      <>
+        <EmailVerificationBanner userId={userId} />
+        <CookDashboard userId={userId} name={session.user.name || "Chef"} />
+      </>
+    );
   }
 
-  return <CustomerDashboard userId={userId} name={session.user.name || "User"} />;
+  return (
+    <>
+      <EmailVerificationBanner userId={userId} />
+      <CustomerDashboard userId={userId} name={session.user.name || "User"} />
+    </>
+  );
 }
 
 async function CookDashboard({

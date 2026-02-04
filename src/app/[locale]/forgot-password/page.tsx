@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Link, useRouter } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { requestPasswordReset } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChefHat, Mail, Loader2, CheckCircle2, ArrowLeft } from "lucide-react";
+import { ChefHat, Mail, Loader2, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function ForgotPasswordPage() {
   const t = useTranslations("forgotPassword");
-  const router = useRouter();
+  const locale = useLocale();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [resetLink, setResetLink] = useState("");
+  const [resetLink, setResetLink] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -24,24 +24,18 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json();
+      const result = await requestPasswordReset(email);
 
-      if (data.success) {
-        setSent(true);
-        if (data.token) {
-          // MVP: show the reset link directly
-          setResetLink(`${window.location.origin}${window.location.pathname.replace("/forgot-password", "/reset-password")}?token=${data.token}`);
-        }
-      } else {
-        setError(data.error || t("somethingWrong"));
+      if (result.success && result.resetToken) {
+        const base = typeof window !== "undefined" ? window.location.origin : "";
+        const link = `${base}/${locale}/reset-password?token=${result.resetToken}`;
+        setResetLink(link);
+      } else if (result.success) {
+        // Email not found — but we don't tell the user (security)
+        setResetLink("sent");
       }
     } catch {
-      setError(t("somethingWrong"));
+      setError(t("error"));
     } finally {
       setLoading(false);
     }
@@ -63,15 +57,36 @@ export default function ForgotPasswordPage() {
 
         <Card className="border-stone-200/60 shadow-lg shadow-stone-200/30">
           <CardHeader className="text-center pb-2">
-            <CardTitle className="text-xl font-semibold text-stone-900">
-              {t("title")}
-            </CardTitle>
+            <CardTitle className="text-xl font-semibold text-stone-900">{t("title")}</CardTitle>
             <CardDescription className="text-stone-500">
-              {t("subtitle")}
+              {t("description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-4">
-            {!sent ? (
+            {resetLink ? (
+              <div className="text-center py-4">
+                <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-stone-900 mb-2">{t("sent")}</h3>
+                <p className="text-stone-500 text-sm mb-6">{t("sentDesc")}</p>
+                {resetLink !== "sent" && (
+                  <div className="p-3 rounded-xl bg-warm-50 border border-warm-200 text-left mb-6">
+                    <p className="text-xs font-semibold text-warm-700 mb-1">{t("resetLink")}:</p>
+                    <a
+                      href={resetLink}
+                      className="text-xs text-warm-600 hover:text-warm-800 break-all underline"
+                    >
+                      {resetLink}
+                    </a>
+                  </div>
+                )}
+                <Button asChild variant="outline" className="rounded-xl">
+                  <Link href="/login">
+                    <ArrowLeft className="w-4 h-4 mr-1.5" />
+                    {t("backToLogin")}
+                  </Link>
+                </Button>
+              </div>
+            ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-stone-700">{t("emailLabel")}</Label>
@@ -80,7 +95,7 @@ export default function ForgotPasswordPage() {
                     <Input
                       id="email"
                       type="email"
-                      placeholder="you@example.com"
+                      placeholder={t("emailPlaceholder")}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="pl-10 h-11 border-stone-200 focus-visible:ring-warm-500/30 focus-visible:border-warm-500"
@@ -107,38 +122,13 @@ export default function ForgotPasswordPage() {
                   )}
                 </Button>
 
-                <div className="text-center">
-                  <Link href="/login" className="text-sm text-stone-500 hover:text-warm-700 inline-flex items-center gap-1">
-                    <ArrowLeft className="w-3 h-3" />
+                <p className="text-center">
+                  <Link href="/login" className="text-sm text-stone-500 hover:text-stone-700 font-medium">
+                    <ArrowLeft className="w-3.5 h-3.5 inline mr-1" />
                     {t("backToLogin")}
                   </Link>
-                </div>
+                </p>
               </form>
-            ) : (
-              <div className="py-4 text-center">
-                <CheckCircle2 className="w-14 h-14 mx-auto mb-4 text-emerald-500" />
-                <h3 className="text-lg font-semibold text-stone-900 mb-2">{t("sentTitle")}</h3>
-                <p className="text-stone-500 text-sm mb-4">{t("sentDesc")}</p>
-
-                {resetLink && (
-                  <div className="mt-4 p-3 rounded-xl bg-amber-50 border border-amber-200 text-left">
-                    <p className="text-xs font-semibold text-amber-700 mb-1">{t("mvpNote")}</p>
-                    <a
-                      href={resetLink}
-                      className="text-xs text-warm-700 hover:text-warm-800 underline break-all"
-                    >
-                      {resetLink}
-                    </a>
-                  </div>
-                )}
-
-                <div className="mt-6">
-                  <Link href="/login" className="text-sm text-stone-500 hover:text-warm-700 inline-flex items-center gap-1">
-                    <ArrowLeft className="w-3 h-3" />
-                    {t("backToLogin")}
-                  </Link>
-                </div>
-              </div>
             )}
           </CardContent>
         </Card>
