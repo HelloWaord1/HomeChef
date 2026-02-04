@@ -15,8 +15,12 @@ import {
   ChefHat,
   Clock,
   MessageSquare,
-  Send,
 } from "lucide-react";
+import {
+  SubmitBidButton,
+  FirstBidButton,
+  BidActionButtons,
+} from "@/components/event-detail-actions";
 
 export function generateStaticParams() {
   return events.map((event) => ({
@@ -203,10 +207,7 @@ export default async function EventDetailPage({
                   Include your proposed menu and pricing
                 </p>
               </div>
-              <Button className="bg-warm-700 hover:bg-warm-800 text-white rounded-full px-6 shadow-md shadow-warm-700/20">
-                <Send className="w-4 h-4 mr-2" />
-                Submit Bid
-              </Button>
+              <SubmitBidButton />
             </div>
           </div>
         </div>
@@ -276,21 +277,7 @@ export default async function EventDetailPage({
                       <Clock className="w-3 h-3" />
                       Submitted {bid.submittedAt}
                     </span>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-full border-stone-200 text-stone-600 text-xs"
-                      >
-                        Message
-                      </Button>
-                      <Button
-                        size="sm"
-                        className="rounded-full bg-warm-700 hover:bg-warm-800 text-white text-xs"
-                      >
-                        Accept Bid
-                      </Button>
-                    </div>
+                    <BidActionButtons />
                   </div>
                 </div>
               ))}
@@ -307,10 +294,7 @@ export default async function EventDetailPage({
                 This event was just posted. Cooks will start sending proposals
                 soon!
               </p>
-              <Button className="bg-warm-700 hover:bg-warm-800 text-white rounded-full px-6">
-                <Send className="w-4 h-4 mr-2" />
-                Be the First to Bid
-              </Button>
+              <FirstBidButton />
             </div>
           )}
         </div>

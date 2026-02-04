@@ -16,10 +16,9 @@ import {
   Briefcase,
   Clock,
   Zap,
-  Lock,
-  CheckCircle,
   DollarSign,
 } from "lucide-react";
+import { CookProfileActions } from "@/components/cook-profile-actions";
 
 interface CookProfilePageProps {
   params: Promise<{ slug: string }>;
@@ -117,22 +116,7 @@ export default async function CookProfilePage({
               </div>
             </div>
 
-            <div className="flex gap-2 sm:pb-1">
-              <Button
-                variant="outline"
-                size="sm"
-                className="rounded-full border-stone-200 gap-1.5"
-              >
-                <Lock className="w-3.5 h-3.5" />
-                Message
-              </Button>
-              <Button
-                size="sm"
-                className="rounded-full bg-warm-700 hover:bg-warm-800 text-white"
-              >
-                Hire Cook
-              </Button>
-            </div>
+            <CookProfileActions />
           </div>
         </div>
 

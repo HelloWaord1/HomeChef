@@ -34,6 +34,7 @@ export default function RootLayout({
         <Navigation />
         <main className="min-h-screen">{children}</main>
         <Footer />
+        <Toaster position="bottom-right" richColors />
       </body>
     </html>
   );

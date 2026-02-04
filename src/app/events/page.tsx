@@ -69,7 +69,7 @@ export default function BrowseEventsPage() {
               submit your bid to get hired.
             </p>
           </div>
-          <Link href="/post-event">
+          <Link href="/events/new">
             <Button className="bg-warm-700 hover:bg-warm-800 text-white rounded-full px-5 text-sm">
               <CalendarPlus className="w-4 h-4 mr-1.5" />
               Post an Event

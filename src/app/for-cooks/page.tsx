@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ComingSoonButton } from "@/components/coming-soon-button";
 import Image from "next/image";
 import {
   ChefHat,
@@ -124,20 +125,20 @@ export default function ForCooksPage() {
                 appreciate real food.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button
+                <ComingSoonButton
                   size="lg"
                   className="bg-warm-700 hover:bg-warm-800 text-white rounded-full px-8 text-sm font-semibold shadow-lg shadow-warm-700/20"
                 >
                   Apply to Cook
                   <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-                <Button
+                </ComingSoonButton>
+                <ComingSoonButton
                   size="lg"
                   variant="outline"
                   className="rounded-full px-8 text-sm border-stone-300"
                 >
                   Learn More
-                </Button>
+                </ComingSoonButton>
               </div>
 
               <div className="mt-10 flex items-center gap-8">
@@ -315,13 +316,13 @@ export default function ForCooksPage() {
             Join thousands of home cooks who are sharing their passion and
             earning on their own terms.
           </p>
-          <Button
+          <ComingSoonButton
             size="lg"
             className="bg-white text-sage-800 hover:bg-sage-50 rounded-full px-8 text-sm font-semibold shadow-xl"
           >
             Apply Now — It&apos;s Free
             <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+          </ComingSoonButton>
           <p className="text-xs text-sage-400 mt-4">
             Free to join. No commitments. Start when you&apos;re ready.
           </p>

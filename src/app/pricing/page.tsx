@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { PricingCtaButton } from "@/components/pricing-cta-button";
 import {
   Check,
   X,
@@ -143,17 +144,11 @@ export default function PricingPage() {
                 </div>
 
                 {/* CTA */}
-                <Button
-                  className={`w-full rounded-full h-11 text-sm font-semibold mb-6 ${
-                    plan.popular
-                      ? "bg-warm-700 hover:bg-warm-800 text-white shadow-lg shadow-warm-700/20"
-                      : "border-stone-200"
-                  }`}
+                <PricingCtaButton
+                  label={plan.cta}
+                  popular={plan.popular}
                   variant={plan.ctaVariant}
-                >
-                  {plan.cta}
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
+                />
 
                 {/* Features */}
                 <ul className="space-y-3">

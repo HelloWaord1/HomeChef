@@ -1,7 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { ComingSoonButton } from "@/components/coming-soon-button";
 import { Clock, Users, Plus } from "lucide-react";
 import type { Dish } from "@/lib/data";
 
@@ -89,13 +91,13 @@ export function DishCard({ dish, index = 0 }: DishCardProps) {
             </span>
           </div>
 
-          <Button
+          <ComingSoonButton
             size="sm"
             className="rounded-full bg-warm-600 hover:bg-warm-700 text-white h-8 px-3 text-xs"
           >
             <Plus className="w-3 h-3 mr-1" />
             Add
-          </Button>
+          </ComingSoonButton>
         </div>
       </div>
     </article>
