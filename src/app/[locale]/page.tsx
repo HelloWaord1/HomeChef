@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { CookCard } from "@/components/cook-card";
 import { prisma } from "@/lib/prisma";
+import { getTranslations } from "next-intl/server";
 import {
   Search,
   ChefHat,
@@ -24,6 +25,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 export default async function HomePage() {
+  const t = await getTranslations("home");
+
   const dbCooks = await prisma.user.findMany({
     where: { role: "COOK", verified: true },
     include: { dishes: { select: { id: true } } },
@@ -105,32 +108,32 @@ export default async function HomePage() {
             <div className="max-w-xl">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-warm-100 text-warm-700 text-xs font-medium mb-6 animate-fade-in">
                 <span className="w-1.5 h-1.5 rounded-full bg-warm-500 animate-pulse" />
-                Now live in 8 cities worldwide
+                {t("badge")}
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight text-stone-900 leading-[1.1] mb-6 animate-fade-in-up">
-                Hire a home cook
+                {t("heroTitle1")}
                 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-warm-600 to-warm-800">
-                  for any occasion
+                  {t("heroTitle2")}
                 </span>
               </h1>
 
               <p className="text-lg text-stone-500 leading-relaxed mb-8 animate-fade-in-up animation-delay-100">
-                Post your event — dinner party, birthday, date night — and let talented home cooks bid to make it unforgettable. Or browse cooks directly and hire your favorite.
+                {t("heroSubtitle")}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 animate-fade-in-up animation-delay-200">
                 <Link href="/events/new" className="flex-1 sm:flex-none">
                   <Button className="w-full sm:w-auto h-12 px-6 rounded-xl bg-warm-700 hover:bg-warm-800 text-white text-sm font-semibold shadow-lg shadow-warm-700/20 hover:shadow-warm-800/30 transition-all">
                     <CalendarPlus className="w-4 h-4 mr-2" />
-                    Post an Event
+                    {t("postEvent")}
                   </Button>
                 </Link>
                 <Link href="/cooks" className="flex-1 sm:flex-none">
                   <Button variant="outline" className="w-full sm:w-auto h-12 px-6 rounded-xl border-stone-300 text-sm font-semibold">
                     <Search className="w-4 h-4 mr-2" />
-                    Find a Cook
+                    {t("findCook")}
                   </Button>
                 </Link>
               </div>
@@ -150,7 +153,7 @@ export default async function HomePage() {
                     ))}
                   </div>
                   <span className="text-stone-500">
-                    Trusted by <strong className="text-stone-700">5,000+</strong> hosts &amp; cooks
+                    {t("trustedBy")} <strong className="text-stone-700">{t("trustedCount")}</strong> {t("trustedSuffix")}
                   </span>
                 </div>
               </div>
@@ -180,8 +183,8 @@ export default async function HomePage() {
                   <Sparkles className="w-5 h-5 text-emerald-500" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-stone-900">3 new bids</p>
-                  <p className="text-[10px] text-stone-500">on your dinner event</p>
+                  <p className="text-xs font-semibold text-stone-900">{t("newBids")}</p>
+                  <p className="text-[10px] text-stone-500">{t("onYourEvent")}</p>
                 </div>
               </div>
             </div>
@@ -193,16 +196,16 @@ export default async function HomePage() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="text-xs font-semibold tracking-widest text-warm-600 uppercase">How it works</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mt-3 mb-4">From idea to feast in three steps</h2>
-            <p className="text-stone-500 max-w-lg mx-auto">Whether you&apos;re planning a dinner party for 4 or a celebration for 40, we make it effortless.</p>
+            <span className="text-xs font-semibold tracking-widest text-warm-600 uppercase">{t("howItWorks")}</span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mt-3 mb-4">{t("howItWorksTitle")}</h2>
+            <p className="text-stone-500 max-w-lg mx-auto">{t("howItWorksSubtitle")}</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
             {[
-              { icon: CalendarPlus, title: "Post Your Event", description: "Describe what you need — cuisine, date, guests, budget. Our cooks will compete to win your event." },
-              { icon: MessageSquare, title: "Review Bids", description: "Cooks send proposals with their menu ideas and pricing. Compare profiles, reviews, and pick your favorite." },
-              { icon: Handshake, title: "Enjoy the Meal", description: "Your cook handles everything. Sit back, enjoy restaurant-quality food at home, and leave a review." },
+              { icon: CalendarPlus, title: t("step1Title"), description: t("step1Desc") },
+              { icon: MessageSquare, title: t("step2Title"), description: t("step2Desc") },
+              { icon: Handshake, title: t("step3Title"), description: t("step3Desc") },
             ].map((step, i) => (
               <div key={i} className="text-center group">
                 <div className="relative mb-6 inline-flex">
@@ -220,10 +223,10 @@ export default async function HomePage() {
           </div>
 
           <div className="mt-12 text-center">
-            <p className="text-sm text-stone-400 mb-3">Or skip the bidding —</p>
+            <p className="text-sm text-stone-400 mb-3">{t("skipBidding")}</p>
             <Link href="/cooks">
               <Button variant="outline" className="rounded-full border-stone-200 text-sm">
-                Browse &amp; hire a cook directly
+                {t("browseHireDirect")}
                 <ArrowRight className="w-3.5 h-3.5 ml-2" />
               </Button>
             </Link>
@@ -236,15 +239,15 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <span className="text-xs font-semibold tracking-widest text-warm-600 uppercase">Live Events</span>
-              <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mt-3">People are looking for cooks</h2>
+              <span className="text-xs font-semibold tracking-widest text-warm-600 uppercase">{t("liveEvents")}</span>
+              <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mt-3">{t("liveEventsTitle")}</h2>
               <p className="text-stone-500 mt-2">
-                Open events waiting for guests.{" "}
-                <Link href="/for-cooks" className="text-warm-600 font-medium hover:text-warm-700">Join now →</Link>
+                {t("openEventsWaiting")}{" "}
+                <Link href="/for-cooks" className="text-warm-600 font-medium hover:text-warm-700">{t("joinNow")}</Link>
               </p>
             </div>
             <Link href="/events" className="hidden sm:flex items-center gap-1 text-sm font-medium text-warm-700 hover:text-warm-800 transition-colors">
-              View all events
+              {t("viewAllEvents")}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -264,13 +267,13 @@ export default async function HomePage() {
                         <Calendar className="w-4 h-4 text-stone-400" /><span>{event.date}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-stone-600">
-                        <Users className="w-4 h-4 text-stone-400" /><span>{event.maxGuests} people</span>
+                        <Users className="w-4 h-4 text-stone-400" /><span>{event.maxGuests} {t("people")}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-stone-600">
                         <MapPin className="w-4 h-4 text-stone-400" /><span>{event.city}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-stone-600">
-                        <DollarSign className="w-4 h-4 text-stone-400" /><span>${event.pricePerGuest}/person</span>
+                        <DollarSign className="w-4 h-4 text-stone-400" /><span>${event.pricePerGuest}{t("perPerson")}</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between pt-3 border-t border-stone-100">
@@ -282,7 +285,7 @@ export default async function HomePage() {
                         )}
                         <span className="text-xs text-stone-500">{event.hostName}</span>
                       </div>
-                      <span className="text-xs text-stone-400">{event.bookingCount} bookings</span>
+                      <span className="text-xs text-stone-400">{event.bookingCount} {t("bookings")}</span>
                     </div>
                   </div>
                 </article>
@@ -293,7 +296,7 @@ export default async function HomePage() {
           <div className="mt-8 text-center sm:hidden">
             <Link href="/events">
               <Button variant="outline" className="rounded-full border-warm-200 text-warm-700">
-                View all events
+                {t("viewAllEvents")}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
@@ -306,11 +309,11 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <span className="text-xs font-semibold tracking-widest text-warm-600 uppercase">Top-Rated Cooks</span>
-              <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mt-3">Hire directly, skip the wait</h2>
+              <span className="text-xs font-semibold tracking-widest text-warm-600 uppercase">{t("topRatedCooks")}</span>
+              <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mt-3">{t("hireDirectly")}</h2>
             </div>
             <Link href="/cooks" className="hidden sm:flex items-center gap-1 text-sm font-medium text-warm-700 hover:text-warm-800 transition-colors">
-              View all cooks
+              {t("viewAllCooks")}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -324,7 +327,7 @@ export default async function HomePage() {
           <div className="mt-8 text-center sm:hidden">
             <Link href="/cooks">
               <Button variant="outline" className="rounded-full border-warm-200 text-warm-700">
-                View all cooks
+                {t("viewAllCooks")}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
@@ -336,15 +339,15 @@ export default async function HomePage() {
       <section className="py-24 bg-sage-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-4">Why choose FreeChef?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-4">{t("whyChooseTitle")}</h2>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: Shield, title: "Verified Cooks", description: "Every cook is vetted. Reviews, ratings, and verified experience you can trust." },
-              { icon: CreditCard, title: "Flexible Payment", description: "Pay through the app or arrange directly. Fiat and crypto accepted." },
-              { icon: Globe, title: "Global Cuisines", description: "Georgian, Japanese, Mexican, French — 200+ cuisines from 10+ countries." },
-              { icon: Users, title: "Any Occasion", description: "Dinner for 2 or a party for 50. Cooks who specialize in events of every size." },
+              { icon: Shield, title: t("whyVerified"), description: t("whyVerifiedDesc") },
+              { icon: CreditCard, title: t("whyPayment"), description: t("whyPaymentDesc") },
+              { icon: Globe, title: t("whyCuisines"), description: t("whyCuisinesDesc") },
+              { icon: Users, title: t("whyOccasion"), description: t("whyOccasionDesc") },
             ].map((item, i) => (
               <div key={i} className="bg-white rounded-2xl p-6 border border-sage-100 hover:shadow-md transition-all">
                 <div className="w-11 h-11 rounded-xl bg-sage-100 text-sage-600 flex items-center justify-center mb-4">
@@ -363,21 +366,21 @@ export default async function HomePage() {
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E")' }} />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-            Your next amazing meal<br className="hidden sm:block" /> starts here
+            {t("ctaTitle")}
           </h2>
           <p className="text-warm-200 text-lg mb-8 max-w-2xl mx-auto">
-            Join thousands of hosts who&apos;ve discovered the magic of hiring a home cook. Post your first event in under a minute.
+            {t("ctaSubtitle")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/events/new">
               <Button size="lg" className="bg-white text-warm-800 hover:bg-warm-50 rounded-full px-8 text-sm font-semibold shadow-xl">
-                Post an Event
+                {t("postEvent")}
                 <CalendarPlus className="w-4 h-4 ml-2" />
               </Button>
             </Link>
             <Link href="/for-cooks">
               <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 rounded-full px-8 text-sm font-semibold">
-                I&apos;m a Cook
+                {t("imACook")}
                 <ChefHat className="w-4 h-4 ml-2" />
               </Button>
             </Link>
