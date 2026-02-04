@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { CooksPageClient } from "@/components/cooks-page-client";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://freechef.com";
+
 export default async function BrowseCooksPage() {
   const cooks = await prisma.user.findMany({
     where: { role: "COOK" },
@@ -33,7 +35,49 @@ export default async function BrowseCooksPage() {
     longitude: cook.longitude,
   }));
 
-  return <CooksPageClient cooks={cookData} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Home Cooks on FreeChef",
+    description: "Browse talented home cooks available for hire on FreeChef",
+    numberOfItems: cookData.length,
+    itemListElement: cookData.map((cook, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Person",
+        name: cook.name,
+        url: `${BASE_URL}/en/cooks/${cook.slug}`,
+        image: cook.avatar,
+        jobTitle: "Home Cook",
+        description: cook.bio,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: cook.city,
+          addressCountry: cook.country,
+        },
+        aggregateRating: cook.reviewCount > 0
+          ? {
+              "@type": "AggregateRating",
+              ratingValue: cook.rating,
+              reviewCount: cook.reviewCount,
+              bestRating: 5,
+              worstRating: 1,
+            }
+          : undefined,
+      },
+    })),
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <CooksPageClient cooks={cookData} />
+    </>
+  );
 }
 
 function getCoverImage(cuisine?: string): string {

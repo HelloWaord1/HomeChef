@@ -17,6 +17,7 @@ async function main() {
   const hashedPassword = await bcrypt.hash("password123", 12);
   const hashedCookPassword = await bcrypt.hash("cook1234", 12);
   const hashedTestPassword = await bcrypt.hash("test1234", 12);
+  const hashedAdminPassword = await bcrypt.hash("admin1234", 12);
 
   // Create cooks
   const nino = await prisma.user.create({
@@ -197,6 +198,18 @@ async function main() {
       password: hashedTestPassword,
       role: "CUSTOMER",
       location: "New York, USA",
+    },
+  });
+
+  // Create admin account
+  await prisma.user.create({
+    data: {
+      email: "admin@freechef.com",
+      name: "Admin",
+      password: hashedAdminPassword,
+      role: "ADMIN",
+      location: "New York, USA",
+      emailVerified: true,
     },
   });
 

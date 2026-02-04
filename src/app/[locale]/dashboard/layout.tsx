@@ -16,6 +16,7 @@ import {
   Loader2,
   Settings,
   Bell,
+  ShieldCheck,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -94,6 +95,12 @@ export default function DashboardLayout({
       label: t("settingsNav"),
       icon: Settings,
     },
+    {
+      href: "/dashboard/admin" as const,
+      label: t("adminNav"),
+      icon: ShieldCheck,
+      adminOnly: true,
+    },
   ];
 
   if (status === "loading") {
@@ -110,7 +117,11 @@ export default function DashboardLayout({
 
   const userRole = (session.user as { role?: string }).role;
   const filteredNav = navItems.filter(
-    (item) => !item.cookOnly || userRole === "COOK"
+    (item) => {
+      if (item.cookOnly && userRole !== "COOK") return false;
+      if (item.adminOnly && userRole !== "ADMIN") return false;
+      return true;
+    }
   );
 
   return (

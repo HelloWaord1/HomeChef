@@ -55,8 +55,8 @@ export function Footer() {
             <ul className="space-y-3">
               <li><span className="text-sm text-stone-600 cursor-default">{t("helpCenter")}</span></li>
               <li><span className="text-sm text-stone-600 cursor-default">{t("safety")}</span></li>
-              <li><span className="text-sm text-stone-600 cursor-default">{t("terms")}</span></li>
-              <li><span className="text-sm text-stone-600 cursor-default">{t("privacy")}</span></li>
+              <li><Link href="/terms" className="text-sm hover:text-white transition-colors">{t("terms")}</Link></li>
+              <li><Link href="/privacy" className="text-sm hover:text-white transition-colors">{t("privacy")}</Link></li>
             </ul>
           </div>
         </div>
