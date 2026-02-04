@@ -15,13 +15,15 @@ async function main() {
   await prisma.user.deleteMany();
 
   const hashedPassword = await bcrypt.hash("password123", 12);
+  const hashedCookPassword = await bcrypt.hash("cook1234", 12);
+  const hashedTestPassword = await bcrypt.hash("test1234", 12);
 
   // Create cooks
   const nino = await prisma.user.create({
     data: {
       email: "nino@freechef.com",
       name: "Nino Kapanadze",
-      password: hashedPassword,
+      password: hashedCookPassword,
       role: "COOK",
       avatar: "https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?w=200&h=200&fit=crop&crop=face",
       bio: "Born and raised in Tbilisi, I bring the warmth of Georgian hospitality to every dish. My grandmother taught me the art of khinkali folding when I was seven. Every meal carries her spirit — generous, soulful, and always with wine nearby.",
@@ -184,6 +186,17 @@ async function main() {
       rating: 4.8,
       reviewCount: 98,
       verified: true,
+    },
+  });
+
+  // Create test customer account
+  const testCustomer = await prisma.user.create({
+    data: {
+      email: "test@freechef.com",
+      name: "Test User",
+      password: hashedTestPassword,
+      role: "CUSTOMER",
+      location: "New York, USA",
     },
   });
 

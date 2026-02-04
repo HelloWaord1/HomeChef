@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { register } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,7 +46,7 @@ export default function SignupPage() {
         setError("Account created, but auto-login failed. Please log in manually.");
         router.push("/login");
       } else {
-        router.push("/");
+        router.push("/dashboard");
         router.refresh();
       }
     } catch {
@@ -71,7 +70,7 @@ export default function SignupPage() {
               <ChefHat className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold tracking-tight text-stone-900">
-              Home<span className="text-warm-700">Chef</span>
+              Free<span className="text-warm-700">Chef</span>
             </span>
           </Link>
           <p className="text-stone-500 text-sm">Join the community of home food lovers.</p>

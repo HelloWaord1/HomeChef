@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { CookCard } from "@/components/cook-card";
@@ -332,11 +332,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ─── Why HomeChef ─── */}
+      {/* ─── Why FreeChef ─── */}
       <section className="py-24 bg-sage-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-4">Why choose HomeChef?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-4">Why choose FreeChef?</h2>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">

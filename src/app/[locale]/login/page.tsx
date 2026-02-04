@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -159,8 +158,8 @@ export default function LoginPage() {
             {/* Demo account hint */}
             <div className="mt-4 p-3 rounded-xl bg-stone-50 border border-stone-200 text-stone-600 text-xs text-center">
               <p className="font-medium mb-1">Demo accounts:</p>
-              <p>Any cook email (e.g. <code className="bg-stone-200/50 px-1 rounded">nino@freechef.com</code>)</p>
-              <p>Password: <code className="bg-stone-200/50 px-1 rounded">password123</code></p>
+              <p>Customer: <code className="bg-stone-200/50 px-1 rounded">test@freechef.com</code> / <code className="bg-stone-200/50 px-1 rounded">test1234</code></p>
+              <p>Cook: <code className="bg-stone-200/50 px-1 rounded">nino@freechef.com</code> / <code className="bg-stone-200/50 px-1 rounded">cook1234</code></p>
             </div>
 
             <p className="mt-6 text-center text-sm text-stone-500">
