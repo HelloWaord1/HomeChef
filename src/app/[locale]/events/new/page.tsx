@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,7 @@ import {
   Minus,
   Plus,
   Check,
+  Clock,
 } from "lucide-react";
 
 const cuisineOptions = [
@@ -51,20 +52,91 @@ const dateOptions = [
   { value: "custom", label: "Pick a date" },
 ];
 
+// Generate time slots with 30-min intervals
+const timeSlots = Array.from({ length: 33 }, (_, i) => {
+  const hour = Math.floor(i / 2) + 8; // Start from 8 AM
+  const minute = (i % 2) * 30;
+  const time24 = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+  const hour12 = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const time12 = `${hour12}:${minute.toString().padStart(2, "0")} ${ampm}`;
+  return { value: time24, label: time12 };
+});
+
 export default function PostEventPage() {
+  // Location state
+  const [locationInput, setLocationInput] = useState("");
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
+  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+  const locationInputRef = useRef<HTMLInputElement>(null);
+  
   const [dateOption, setDateOption] = useState("");
   const [customDate, setCustomDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
   const [mealType, setMealType] = useState("");
   const [people, setPeople] = useState(4);
   const [budget, setBudget] = useState(30);
+  const [budgetInput, setBudgetInput] = useState("30");
   const [cuisine, setCuisine] = useState("");
   const [ingredientsProvided, setIngredientsProvided] = useState(false);
   const [description, setDescription] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Sync budget slider with input
+  const handleBudgetSliderChange = (value: number) => {
+    setBudget(value);
+    setBudgetInput(value.toString());
+  };
+
+  const handleBudgetInputChange = (value: string) => {
+    setBudgetInput(value);
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue) && numValue >= 5 && numValue <= 500) {
+      setBudget(numValue);
+    }
+  };
+
+  const handleBudgetInputBlur = () => {
+    const numValue = parseFloat(budgetInput);
+    if (isNaN(numValue) || numValue < 5) {
+      setBudget(5);
+      setBudgetInput("5");
+    } else if (numValue > 500) {
+      setBudget(500);
+      setBudgetInput("500");
+    } else {
+      setBudget(numValue);
+      setBudgetInput(numValue.toString());
+    }
+  };
+
+  // TODO: Initialize Google Places Autocomplete when API key is available
+  // useEffect(() => {
+  //   if (typeof window !== "undefined" && window.google && locationInputRef.current) {
+  //     const autocomplete = new window.google.maps.places.Autocomplete(locationInputRef.current, {
+  //       types: ["address"],
+  //     });
+  //     autocomplete.addListener("place_changed", () => {
+  //       const place = autocomplete.getPlace();
+  //       if (place.geometry?.location) {
+  //         setCoordinates({
+  //           lat: place.geometry.location.lat(),
+  //           lng: place.geometry.location.lng(),
+  //         });
+  //       }
+  //       // Extract address components
+  //       const components = place.address_components || [];
+  //       const getComponent = (type: string) => components.find((c) => c.types.includes(type))?.long_name || "";
+  //       setCountry(getComponent("country"));
+  //       setCity(getComponent("locality") || getComponent("administrative_area_level_1"));
+  //       setAddress(place.formatted_address || "");
+  //       setLocationInput(place.formatted_address || "");
+  //     });
+  //   }
+  // }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,6 +216,29 @@ export default function PostEventPage() {
                 Location
               </h2>
             </div>
+            
+            {/* Google Places Autocomplete Input */}
+            {/* TODO: Add Google Places API key to enable autocomplete */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-stone-700 mb-1.5">
+                Search Address
+              </label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+                <Input
+                  ref={locationInputRef}
+                  placeholder="Start typing your address..."
+                  value={locationInput}
+                  onChange={(e) => setLocationInput(e.target.value)}
+                  className="h-11 pl-10 rounded-xl border-stone-200 bg-stone-50/50 focus:bg-white"
+                />
+              </div>
+              <p className="text-xs text-stone-400 mt-1.5">
+                Start typing to search, or fill in manually below
+              </p>
+            </div>
+
+            {/* Manual fields (auto-filled when address is selected) */}
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-stone-700 mb-1.5">
@@ -171,7 +266,7 @@ export default function PostEventPage() {
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-stone-700 mb-1.5">
-                  Address
+                  Full Address
                 </label>
                 <Input
                   placeholder="Street, building, apartment..."
@@ -182,6 +277,12 @@ export default function PostEventPage() {
                 />
               </div>
             </div>
+            
+            {coordinates && (
+              <p className="text-xs text-stone-400 mt-2">
+                📍 Coordinates: {coordinates.lat.toFixed(6)}, {coordinates.lng.toFixed(6)}
+              </p>
+            )}
           </div>
 
           {/* When & What Section */}
@@ -224,6 +325,31 @@ export default function PostEventPage() {
                   className="mt-3 h-11 rounded-xl border-stone-200 bg-stone-50/50 focus:bg-white max-w-xs"
                   required
                 />
+              )}
+            </div>
+
+            {/* Time Picker */}
+            <div className="mb-5">
+              <label className="block text-sm font-medium text-stone-700 mb-2">
+                <Clock className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
+                Preferred Time
+              </label>
+              <Select value={selectedTime} onValueChange={setSelectedTime}>
+                <SelectTrigger className="w-full sm:w-48 h-11 rounded-xl border-stone-200 bg-stone-50/50">
+                  <SelectValue placeholder="Select time..." />
+                </SelectTrigger>
+                <SelectContent className="max-h-60">
+                  {timeSlots.map((slot) => (
+                    <SelectItem key={slot.value} value={slot.value}>
+                      {slot.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedTime && (
+                <p className="text-xs text-stone-400 mt-1.5">
+                  Selected: {timeSlots.find(s => s.value === selectedTime)?.label}
+                </p>
               )}
             </div>
 
@@ -324,32 +450,46 @@ export default function PostEventPage() {
               </div>
             </div>
 
-            {/* Budget Slider */}
+            {/* Budget Slider + Custom Input */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2">
                 <label className="text-sm font-medium text-stone-700">
                   Budget per Person
                 </label>
-                <span className="text-lg font-bold text-warm-700">
-                  ${budget}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-stone-500">$</span>
+                  <Input
+                    type="number"
+                    min="5"
+                    max="500"
+                    step="0.50"
+                    value={budgetInput}
+                    onChange={(e) => handleBudgetInputChange(e.target.value)}
+                    onBlur={handleBudgetInputBlur}
+                    className="w-24 h-9 rounded-lg border-stone-200 text-right font-bold text-warm-700 text-lg"
+                    placeholder="30"
+                  />
+                </div>
               </div>
               <input
                 type="range"
                 min="5"
                 max="200"
                 step="5"
-                value={budget}
-                onChange={(e) => setBudget(Number(e.target.value))}
+                value={Math.min(budget, 200)}
+                onChange={(e) => handleBudgetSliderChange(Number(e.target.value))}
                 className="w-full h-2 bg-stone-200 rounded-full appearance-none cursor-pointer accent-warm-600"
               />
               <div className="flex justify-between text-xs text-stone-400 mt-1">
                 <span>$5</span>
-                <span>$200</span>
+                <span>$200+</span>
               </div>
+              <p className="text-xs text-stone-400 mt-1">
+                Use slider for quick selection or type exact amount (up to $500)
+              </p>
               <div className="mt-3 p-3 rounded-xl bg-warm-50 border border-warm-100">
                 <p className="text-sm text-warm-700 font-medium">
-                  Total budget: ${budget * people} for {people} people
+                  Total budget: ${(budget * people).toFixed(2)} for {people} people
                 </p>
               </div>
             </div>

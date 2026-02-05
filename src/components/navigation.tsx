@@ -18,7 +18,7 @@ export function Navigation() {
 
   const navLinks = [
     { href: "/cooks" as const, label: t("browseCooks") },
-    { href: "/dishes" as const, label: t("dishes") },
+    // { href: "/dishes" as const, label: t("dishes") }, // Hidden: Каталог блюд disabled
     { href: "/events" as const, label: t("events") },
     { href: "/pricing" as const, label: t("pricing") },
     { href: "/for-cooks" as const, label: t("forCooks") },

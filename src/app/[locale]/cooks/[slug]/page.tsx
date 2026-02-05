@@ -247,50 +247,85 @@ export default async function CookProfilePage({ params }: CookProfilePageProps) 
 
         <Separator className="mb-10" />
 
-        {/* Signature Dishes */}
+        {/* Portfolio Gallery - Cook's Dishes */}
         {cook.dishes.length > 0 && (
           <div className="mb-10">
-            <h2 className="text-xl font-bold text-stone-900 mb-2">Signature Dishes</h2>
+            <div className="flex items-center gap-3 mb-2">
+              <h2 className="text-xl font-bold text-stone-900">Portfolio</h2>
+              <Badge variant="secondary" className="bg-sage-100 text-sage-700 border-0 text-xs">
+                {cook.dishes.length} {cook.dishes.length === 1 ? 'dish' : 'dishes'}
+              </Badge>
+            </div>
             <p className="text-stone-500 mb-6 text-sm">
-              A preview of what {cook.name?.split(" ")[0]} can prepare for your event
+              {cook.name?.split(" ")[0]}&apos;s signature dishes and culinary creations
             </p>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {cook.dishes.map((dish) => (
-                <div key={dish.id} className="bg-white rounded-xl border border-stone-100 overflow-hidden group">
-                  <div className="relative h-40 overflow-hidden">
+            {/* Gallery Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {cook.dishes.map((dish, index) => (
+                <div 
+                  key={dish.id} 
+                  className={`group relative overflow-hidden rounded-xl border border-stone-100 bg-white shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 ${
+                    index === 0 ? 'col-span-2 row-span-2' : ''
+                  }`}
+                >
+                  <div className={`relative overflow-hidden ${index === 0 ? 'h-80' : 'h-40'}`}>
                     {dish.image ? (
                       <Image
                         src={dish.image}
                         alt={dish.name}
                         fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                     ) : (
-                      <div className="w-full h-full bg-stone-100 flex items-center justify-center text-stone-400">
-                        No Image
+                      <div className="w-full h-full bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center text-stone-400">
+                        <span className="text-4xl">🍽️</span>
                       </div>
                     )}
+                    {/* Overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Price badge */}
                     <div className="absolute top-2 right-2">
-                      <span className="bg-white/95 backdrop-blur-sm text-stone-900 font-bold px-2 py-1 rounded-full text-xs">
+                      <span className="bg-white/95 backdrop-blur-sm text-stone-900 font-bold px-2.5 py-1 rounded-full text-xs shadow-sm">
                         ${dish.price}
                       </span>
                     </div>
-                  </div>
-                  <div className="p-3">
-                    <h4 className="font-medium text-stone-900 text-sm">{dish.name}</h4>
-                    <p className="text-xs text-stone-500 line-clamp-2 mt-1 leading-relaxed">
-                      {dish.description}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-stone-400">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {dish.preparationTime} min
-                      </span>
+
+                    {/* Info overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <h4 className="font-semibold text-white text-sm mb-1">{dish.name}</h4>
+                      <p className="text-white/80 text-xs line-clamp-2 leading-relaxed">
+                        {dish.description}
+                      </p>
+                      <div className="flex items-center gap-3 mt-2 text-xs text-white/70">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {dish.preparationTime} min
+                        </span>
+                      </div>
                     </div>
+                  </div>
+                  
+                  {/* Static info for mobile/touch */}
+                  <div className="p-2.5 sm:hidden">
+                    <h4 className="font-medium text-stone-900 text-xs line-clamp-1">{dish.name}</h4>
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Call to action */}
+            <div className="mt-6 text-center">
+              <p className="text-sm text-stone-500">
+                Interested in any of these dishes?{" "}
+                <button 
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  className="text-warm-600 font-medium hover:text-warm-700"
+                >
+                  Book {cook.name?.split(" ")[0]} now
+                </button>
+              </p>
             </div>
           </div>
         )}

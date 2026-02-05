@@ -31,7 +31,7 @@ export function Footer() {
             </h4>
             <ul className="space-y-3">
               <li><Link href="/cooks" className="text-sm hover:text-white transition-colors">{t("browseCooks")}</Link></li>
-              <li><Link href="/dishes" className="text-sm hover:text-white transition-colors">{t("browseDishes")}</Link></li>
+              {/* <li><Link href="/dishes" className="text-sm hover:text-white transition-colors">{t("browseDishes")}</Link></li> */}{/* Hidden: Каталог блюд */}
               <li><Link href="/events" className="text-sm hover:text-white transition-colors">{t("cookingEvents")}</Link></li>
               <li><Link href="/for-cooks" className="text-sm hover:text-white transition-colors">{t("becomeCook")}</Link></li>
             </ul>
